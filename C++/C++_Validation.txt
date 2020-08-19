@@ -1,0 +1,66 @@
+/* Validating alpha characters */
+
+void validateUserEntry(string& userEntry)
+{
+	int counter = 0;
+	int userEntryLength = userEntry.length(); //variable to check length
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < userEntryLength || userEntryLength == 0)
+	{
+		if (userEntryLength == 0)
+		{
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+		else if (!isalpha(userEntry[counter]))
+		{
+
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+
+		else
+		{
+			counter++;
+		}
+
+	}
+}
+
+
+/* Validating numbers only */
+
+void validateUserEntry(string& userEntry)
+{
+	int counter = 0;
+	int userEntryLength = userEntry.length(); //variable to check length
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < userEntryLength || userEntryLength == 0)
+	{
+		if (userEntryLength == 0)
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+
+		else if (!isdigit(userEntry[counter]))
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+		else
+		{
+			counter++;
+		}
+	}
+}

@@ -1,0 +1,190 @@
+//The purpose of this program is to calculate grade letters according to the amount of points input by the user from a scale of 1 - 100. Additionally, the program also displays
+//the final results in ascending order along with the total average of all test scores. 
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+//Function prototype
+void getUserScores(int score[], int TOTAL_GRADES);
+void validateUserInput(string input, int& number);
+void bubbleSort(int score[], char grade[], int TOTAL_GRADES);
+void determineGrade(int score[], char grade[], int TOTAL_GRADES);
+void displayTestScores(int score[], char grade[], int TOTAL_GRADES);
+void calcAverage(int score[], int TOTAL_GRADES);
+
+//Five test scores will be asked by the user for input
+const int TOTAL_GRADES = 5;
+
+//int main is set to only call functions. Each funtion is self-explanatory.
+int main()
+{
+	//Variable arrays to be used in the program
+	int score [TOTAL_GRADES];
+	char grade[TOTAL_GRADES];
+
+	getUserScores(score, TOTAL_GRADES);
+
+	bubbleSort(score, grade, TOTAL_GRADES);
+
+	determineGrade(score, grade, TOTAL_GRADES);
+
+	displayTestScores(score, grade, TOTAL_GRADES);
+
+	calcAverage(score, TOTAL_GRADES);
+
+	system("pause");
+	return 0;
+
+}
+
+void getUserScores(int score[], int TOTAL_GRADES)
+{
+	//Two variables that will be used in order to validate the required inputs by the user
+	string input;
+	int number;
+
+	//This loop asks user inputs, validates them, and then receives back a value which is then sorted inside arrays.
+	for (int counter = 0; counter < TOTAL_GRADES; counter++)
+	{
+
+		cout << "Enter score " << counter + 1 << ":" << endl;
+		validateUserInput(input, number);
+		//An integer is returned from the validation under the variable named 'number' and assigns the values inside an array
+		score[counter] = number;
+
+	}
+
+}
+
+void validateUserInput(string input, int& number)
+{
+	//This boolean will be used to confirm the entire loop for validation once it is set to true
+	bool isvalid = false;												
+
+	//While boolean is NOT false
+	while (!isvalid) {													
+
+		int counter = 0;
+		getline(cin, input);
+
+		//This loop will be checking for empty entries, spaces, and non-digit values
+		while (counter < input.length() || input.length() == 0)			
+		{
+
+			if (input.empty())
+			{
+				cout << "Invalid entry. Please type in a number." << endl;
+				getline(cin, input);
+				counter = 0;
+			}
+
+			else if (isalpha(input[counter]) || isspace(input[counter]) || ispunct(input[counter]))
+			{
+
+				cout << "Invalid entry. Try again." << endl;
+				getline(cin, input);
+				counter = 0;
+			}
+
+			else
+			{
+				counter++;
+			}
+
+		}
+
+		//stoi converts the string into an integer
+		number = stoi(input);
+
+		//Range loop will make sure the integer is in between 0 - 100 
+		if (number < 0 || number > 100)							
+		{
+			cout << "Invalid entry. Please type a number between 0 - 100" << endl;
+
+		}
+
+		else
+		{
+			//Boolean exits out
+			isvalid = true;												
+		}
+
+	}
+
+}
+
+
+void determineGrade(int score[], char grade[], int TOTAL_GRADES)
+{
+	//Loop receives the score arrays previously sorted and assigns a letter grade to each of them within a separate array called 'grade'. The letter grade and scores...
+	//follows the grading format according to the quiz instructions.  
+	for (int counter = 0; counter < TOTAL_GRADES; counter++)
+	{
+		if (score[counter] >= 90)
+			grade[counter] = 'A';
+		else if (score[counter] >= 80 && score[counter]<90)
+			grade[counter] = 'B';
+		else if (score[counter] >= 70 && score[counter]<80)
+			grade[counter] = 'C';
+		else if (score[counter] >= 60 && score[counter]<70)
+			grade[counter] = 'D';
+		else
+			grade[counter] = 'F';
+	}
+}
+
+void calcAverage(int score[], int TOTAL_GRADES)
+{
+	//Variables used to calculate the average of all test scores
+	int sum = 0;
+	int average;
+
+	//Loop is simply gathering all inputs by the user and adding each one of them under the variable named 'sum'
+	for (int counter = 0; counter < TOTAL_GRADES; counter++)
+		{
+			sum += score[counter];
+		} 
+	
+	//once 'sum' finishes adding all values, 'average' is used to divide 'sum' by five(test scores)
+	average = sum / 5;
+
+	cout << "The average of the five scores is " << average << endl;
+
+
+}
+
+void displayTestScores(int score[], char grade[], int TOTAL_GRADES)
+{
+	cout << endl << "Score" << "\t" << "Grade" << endl;
+	
+	//The loop displays both 'score' and 'grade' arrays parallel to each other in proper order
+	for (int counter = 0; counter < TOTAL_GRADES; counter++)
+		{
+		cout << score[counter] << "\t" << grade[counter] << endl;
+		}
+}
+
+void bubbleSort(int score[], char grade[], int TOTAL_GRADES)
+{
+	//The following is the algorithm for bubblesort to set array values in ascending order. The algorithm uses a do while loop and at the same time uses a boolean which allows...
+	//the loop to continue as long as there are values to be exchanged.
+	bool swap;
+	int temp;
+
+	do
+	{
+		swap = false;
+		for (int counter = 0; counter < (TOTAL_GRADES - 1); counter++)
+		{
+			if (score[counter] > score[counter + 1])
+			{
+				temp = score[counter];
+				score[counter] = score[counter + 1];
+				score[counter + 1] = temp;
+				swap = true;
+			}
+		}
+	} while (swap);
+
+}

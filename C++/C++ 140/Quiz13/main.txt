@@ -1,0 +1,45 @@
+#include <iostream>
+#include <string>
+#include "Integer.h"
+
+using namespace std;
+
+int main()
+{
+	char continu = 'y';
+	string userEntry;
+
+	cout << "In this program, you will be prompted to enter five integers" << endl;
+	system("pause");
+
+	while (continu == 'y' || continu == 'Y')
+	{
+		//create Integer object
+		Integer nums;
+		
+		for (int index = 0; index < 5; index++)
+		{
+			//calling setUserEntry
+			nums.setUserEntry();
+		}
+
+		nums.displayIntegers();
+		nums.getLargestSmallestIntegers();
+
+		cout << "Enter y/Y to continue. Enter any other character  to exit" << endl;
+		getline(cin, userEntry);
+
+		if (userEntry == "y" || userEntry == "Y")
+		{
+			continu = 'y';
+			system("cls");
+		}
+		else
+		{
+			continu = 'n';
+		}
+	}
+
+	system("pause");
+	return 0;
+}

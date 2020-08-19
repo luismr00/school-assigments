@@ -1,0 +1,154 @@
+#include "Game.h"
+#include "Addition.h"
+#include "Subtraction.h"
+#include "Multiplication.h"
+#include "Division.h"
+#include <iomanip> //For setprecision
+
+using namespace std;
+
+Game::Game()
+{
+	string userName = "";//variable to store the user name
+	double totalWages;//variable to store the total earning
+	int totalCorrect;//variable to store the total of correct responses
+	int totalWrong;//variable to store the total of wrong responses
+	const double REWARD = 0.05;//constant to store 0.05 as a reward for every correct problem
+	const double PENALTY = 0.03;//constant to store 0.03 as a penalty for evry wrong problem
+								//function call to load data
+}
+
+void  Game::splashScreen()
+{
+	//Function to display credits and developer information. 
+
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "**********   The MathGame    **********" << endl;
+	cout << "**********  by Luis Rangel   **********" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl << endl;
+
+	system("pause");
+	system("cls");	
+}
+
+void  Game::menu()
+{
+	//Function to display the menu options and validate them.
+
+	string choice;
+
+	cout << "********* Choose A Problem *********" << endl;
+	cout << "************************************" << endl;
+	cout << "************************************" << endl;
+	cout << "************" << " 1. ADD      " << "***********" << endl;
+	cout << "************" << " 2. SUBTRACT " << "***********" << endl;
+	cout << "************" << " 3. MULTIPLY  " << "**********" << endl;
+	cout << "************" << " 4. DIVISION  " << "**********" << endl;
+	cout << "************" << " 5. STATS     " << "**********" << endl;
+	cout << "************" << " n/N to QUIT " << "***********" << endl;
+	cout << "************************************" << endl;
+	cout << "************************************" << endl;
+
+}
+
+void  Game::updateStats(bool correct) //bolean will go through according to the result from the public function named 'checkAnswer'
+{
+	if (correct)
+	{
+		totalCorrect++;
+	}
+	else
+		totalWrong++;
+}
+
+void  Game::displayStats()
+{
+	double earned = totalCorrect * REWARD;	//new variable gathering total correct
+	double lost = totalWrong * PENALTY; //new variable gathering total wrong
+
+	totalWages = earned - lost; //Simple subtraction to calculate total wages
+
+	//Displaying all stats
+	cout << userName << endl;
+	cout << "Total Earnings:" << "$";
+	cout << setprecision(2) << fixed << totalWages << endl;
+	cout << "Total correct:" << totalCorrect << endl;
+	cout << "Total incorrect:" << totalWrong << endl;
+}
+
+void  Game::requestName()
+{
+	cout << "Enter your name and press <Enter> : ";
+
+	getline(cin, userName);
+	validateUserEntry(userName);
+
+	inData.open(userName + ".txt"); //opening file
+
+	if (!inData) //if file does not exist...
+	{
+		outData.open(userName + ".txt"); //creating new file
+		outData.close(); //closing the file
+	}
+
+	else
+	{
+		//retrieving all data from file into stats and then closing it
+		inData >> userName;
+		inData >> totalWages;        
+		inData >> totalCorrect;
+		inData >> totalWrong;
+		inData.close(); 
+	}
+}
+
+void  Game::saveStats()
+{
+	//opening, saving all stats, and then closing the file
+	outData.open(userName + ".txt"); 
+	outData << userName << endl;
+	outData << totalWages << endl;           
+	outData << totalCorrect << endl;
+	outData << totalWrong << endl;
+	outData.close();        		  
+}
+
+void Game::validateUserEntry(string& userEntry)
+{
+	int counter = 0;
+	int userEntryLength = userEntry.length(); //variable to check length
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < userEntryLength || userEntryLength == 0)
+	{
+		if (userEntryLength == 0)
+		{
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+		else if (!isalpha(userEntry[counter]))
+		{
+
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+
+		else
+		{
+			counter++;
+		}
+
+	}
+}

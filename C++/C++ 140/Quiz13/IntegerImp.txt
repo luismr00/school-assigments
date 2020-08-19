@@ -1,0 +1,89 @@
+#include <iostream>
+#include <string>
+#include "Integer.h"
+
+using namespace std; 
+
+//constructor
+Integer::Integer()
+{
+	counter = 0;
+	for (int index = 0; index<5; index++)
+		array[index] = 0;
+}
+
+
+void Integer::setUserEntry()
+{
+	string input;
+	cout << "Enter element : ";
+	getline(cin, input);
+	int validatedInt = validate(input);
+	array[counter] = validatedInt;
+	counter++;
+
+}
+
+
+int Integer::validate(string _userInput)
+{
+	// call function on input
+	// isdigit() or !isnumber
+
+	bool isvalid = false;
+
+	while (!isvalid)
+	{
+
+		int count = 0;
+
+		while (count < _userInput.length() || _userInput.length() == 0)
+		{
+
+			if (count == 0 && _userInput[count] == '-')
+			{
+				count++;
+			}
+
+			if (!isdigit(_userInput[count]))
+			{
+				cout << "invalid entry, Please type a number." << endl;
+				getline(cin, _userInput);
+				count = 0;
+			}
+			else
+			{
+				count++;
+			}
+		}
+
+		isvalid = true;
+	}
+
+	int number = stoi(_userInput);
+	return number;
+}
+
+
+void Integer::displayIntegers() const
+{
+	cout << "The integers in the array are:" << endl;
+
+	for (int index = 0; index<5; index++)
+		cout << array[index] << endl;
+}
+
+void Integer::getLargestSmallestIntegers()
+{
+	int largest = array[0];
+	int smallest = array[0];
+	for (int index = 1; index<5; index++)
+	{
+		if (a[index]>largest)
+			largest = a[index];
+		if (a[index]<smallest)
+			smallest = a[index];
+	}
+
+	cout << "The smallest integer is " << smallest << " and the largest integer is " << largest << endl;
+}

@@ -1,0 +1,42 @@
+//** FUTURE NOTE FOR MYSELF**//
+//cpp files must be removed in order for program to run, NOT deleted... 
+
+#include "ArrayOfObjects.h"
+
+//constructor
+template <typename Item>
+ArrayOfObjects<Item>::ArrayOfObjects()
+{
+	//post condition
+	ptrToArrayOfObjects = 0;
+	qtyOfObjects = 0;
+}
+template <typename Item>
+ArrayOfObjects<Item>::ArrayOfObjects(int arraySize)
+{
+	//post condition
+	// ptrToArrayOfObjects is dynamically allocated memory for an array of size arraySize and type Item.
+	//in addition, if (arraySize < 0, then throw an ErrorAllocatingPointerMemory  exception
+	if (arraySize < 0)
+	{
+		throw ErrorAllocatingPointerMemory(arraySize);
+	}
+	else
+	{
+		ptrToArrayOfObjects = new Item[arraySize];
+	}
+	qtyOfObjects = arraySize;
+}
+
+//overload [] operator
+template <typename Item>
+Item &ArrayOfObjects<Item>::operator[](const int & x)
+{
+	//post condition
+	//Return the object of type Item located at index value x
+	if (x < 0 || x >= qtyOfObjects)
+	{
+		throw ErrorAllocatingPointerMemory(x);
+	}
+	return ptrToArrayOfObjects[x];
+}

@@ -1,0 +1,26 @@
+public void validateUserEntry() {
+
+	boolean isDigit = false;
+	Scanner input = new Scanner(System.in);
+	String userEntry = input.nextLine();
+        
+	while (isDigit == false) {
+	
+		//change what's inside the parenthesis after matches depending what exactly you want to check for
+		//-?+ check for positive and negative integers
+		//for alpha characters only, add [a-zA-Z]+ inside the parenthesis
+		isDigit = userEntry.matches("(-?+)[0-9]+");
+
+		if (isDigit == false) {
+			System.out.println("Please enter a number. Try Again.");
+			userEntry = input.nextLine();
+                    
+		} 
+		// else {
+		//     System.out.println("Valid input!");
+		// }
+	}
+
+	//Deal with the validation as a string first, then convert to an integer if you have to
+	//userResponse = Integer.parseInt(userEntry);
+}

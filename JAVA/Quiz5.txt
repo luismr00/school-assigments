@@ -1,0 +1,201 @@
+// ***************************************************************** //
+//  This program has been converted as similar as possible to Quiz5  //
+//  of C++. Although, JAVA does not use reference variables unlike   //
+//  in C++. Therefore, I used a return method instead of void for    //
+//  one of the methods written here. Also, creating and writing      //
+//  to a file is way different and had to import more headers com-   //
+//  to the C++ code. Lastly, validation code works differently to    //
+//  C++, so make sure to review the validation method in case you    //
+//  need to validate a future program later on.                      //
+// ***************************************************************** //
+
+import java.util.Scanner;
+import java.lang.String;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
+public class Application {
+
+    public static void main(String[] args) {
+        String number;
+        String[] numArray;
+        String seperateLines = "-------------------------------------";
+        int size;
+        
+        char continu = 'y';
+        Scanner input = new Scanner(System.in);
+
+        while (continu == 'y' || continu == 'Y') {
+
+            createFile();
+
+            //create a while loop
+            number = inputValidation();
+            numArray = number.split("");
+            size = number.length();
+
+            //call reverse
+            reverse(numArray, size);
+            //call even
+            even(numArray, size);
+            //call odd
+            odd(numArray, size);
+            //write distinguishable lines to the file to seperate the new inputs
+            writeFile(seperateLines);
+
+            System.out.println("Press Y/y to continue. Press any other key to exit it out.");
+            continu = input.next(".").charAt(0);
+        }
+
+        System.out.println("Good-Bye!");
+        
+        
+     }
+
+     public static void createFile() {
+        File f = new File("outDataFile.txt");
+        
+        try {
+            if (f.createNewFile()) {
+                System.out.println("File created!");
+            } else {
+                System.out.println("File already exists!");
+            }
+        } catch (IOException e) {
+            System.out.println("An error ocurred!");
+            e.printStackTrace();
+        }
+     }
+
+     public static void writeFile(String str) {
+         try {
+            FileWriter writer = new FileWriter("outDataFile.txt", true);
+            BufferedWriter w = new BufferedWriter(writer);
+            w.write(str + "\n");
+            w.close();
+            writer.close();
+            //System.out.println("Successfully wrote to the file!");
+         } catch (IOException e) {
+            //System.out.println("An error ocurred!");
+            e.printStackTrace();
+         }
+     }
+
+     public static String inputValidation() {
+        
+        String str;
+        Boolean isDigit = false;
+        Scanner input = new Scanner(System.in);
+        String data = "The original number is: ";   
+
+        System.out.println("Enter an integer and press <ENTER>");
+        str = input.nextLine();
+
+        while (isDigit == false) {
+            isDigit = str.matches("[0-9]+");
+
+            if (isDigit == false) {
+                System.out.println("Please enter a number. Try Again.");
+                str = input.nextLine();
+            } 
+            // else {
+            //     System.out.println("Valid input!");
+            // }
+        }
+
+        data += str;
+        System.out.println(data);
+        writeFile(data);
+        return str;
+
+     }
+
+     public static void reverse(String[] strArray, int size) {
+
+        String currentChar;
+        String[] array = new String[size];
+        String data = "The reverse number is: ";
+        int counter = 0;
+
+        for (int i = size - 1; i >= 0; i--) {
+            currentChar = strArray[i];
+            array[counter] = currentChar;
+            counter++;
+        }
+
+        for (int j = 0; j < size; j++) {
+            data += array[j] + " ";
+        }
+
+        System.out.println(data);
+        writeFile(data);
+
+     }
+
+     public static void even(String[] strArray, int size) {
+
+        int currentNum;
+        String[] evenNums = new String[size];
+        String data = "The even numbers are: ";
+        int counter = 0;
+
+
+        for (int i = 0; i < size; i++) {
+            
+            //convert current char to a num
+            currentNum = Integer.parseInt(strArray[i]);
+
+            if (currentNum % 2 == 0) {
+                evenNums[counter] = strArray[i];
+                counter++; 
+            }
+        }
+
+        if (counter == 0) {
+            System.out.println("There were no even numbers");
+        } else {
+            for (var j = 0; j < counter; j++) {
+                data +=  evenNums[j] + " ";
+            }
+        }
+
+        System.out.println(data);
+        writeFile(data);
+
+     }
+
+     public static void odd(String[] strArray, int size) {
+
+        int currentNum;
+        String[] oddNums = new String[size];
+        String data = "The odd numbers are: ";
+        int counter = 0;
+
+
+        for (int i = 0; i < size; i++) {
+            
+            //convert current char to a num
+            currentNum = Integer.parseInt(strArray[i]);
+
+            if (currentNum % 2 == 1) {
+                oddNums[counter] = strArray[i];
+                counter++; 
+            }
+        }
+
+        if (counter == 0) {
+            System.out.println("There were no odd numbers");
+        } else {
+            for (var j = 0; j < counter; j++) {
+                data += oddNums[j] + " ";
+            }
+        }
+
+        System.out.println(data);
+        writeFile(data);
+
+     }
+}

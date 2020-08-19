@@ -1,0 +1,26 @@
+import java.util.Random;
+
+public class Application {
+
+    public static void main(String[] args) {
+
+        double sum, difference, product, quotient;
+
+        Random rand = new Random();
+        
+        double x = rand.nextInt(10);
+        double y = rand.nextInt(10);
+
+        sum = x + y;
+        difference = x - y;
+        product = x * y;
+        quotient = x/y;
+        
+        String.format("%.20f", quotient);
+        
+        System.out.println("The sum of " + x + " + " + y + " = " + sum);
+        System.out.println("The difference of " + x + " - " + y + " = " + difference);
+        System.out.println("The product of " + x + " * " + y + " = " + product);    
+        System.out.println("The quotient of " + x + " / " + y + " = " + quotient);
+    }
+}

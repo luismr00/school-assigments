@@ -1,0 +1,283 @@
+#include <iostream>
+#include <stdlib.h> /* srand, rand */
+#include <time.h> /* time */
+#include <string> /* header was not included in the started. Yet, a string variable was included; Therefore the header is required*/
+
+using namespace std;
+
+// Function prototypes
+double median(int *, int);
+int mode(int *, int);
+int *makeArray(int);
+void loadNumberData(int *, int);
+void selectionSort(int[], int);
+double average(int *, int);
+void displayArray(int * numberData, int qtyOfRandomNumbers);
+void validateInt(string userIn, int& userInput);
+
+//main function
+int main()
+{
+	//Input variables
+	string userIn;
+	int userInput;
+
+	//Requesting and validating the variables first
+	cout << "How many numbers do you want to generate? ";
+	validateInt(userIn, userInput);
+
+	//Creating an array and loading random numbers inside them 
+	int *array = makeArray(userInput);
+	loadNumberData(array, userInput);
+
+	//Displays the random values from the array
+	displayArray(array, userInput);
+	cout << endl;
+
+	//Sorts the values inside the array first and then displays the array again
+	selectionSort(array, userInput);
+	displayArray(array, userInput);
+	cout << endl;
+
+	//Displays the average and median results returning from their perspective functions
+	cout << "\nThe average is " << average(array, userInput) << endl;
+	cout << "The median of the numbers is " << median(array, userInput) << endl;
+
+	//If the mode function returns a value or not, it will output a message accordingly depending what was received
+	int modeValue = mode(array, userInput);
+	if (modeValue == -1)
+		cout << "The set has no mode\n" << endl;
+	else
+		cout << "The mode of the numbers is " << modeValue << endl << endl;
+
+	//Deleting the array to free memory before exiting the program
+	delete[] array;
+	system("pause");
+	return 0;
+}
+
+//function definitions
+//**************************************************
+//function validateInt ensures that the user input *
+//is an integer >= 0							   *
+//**************************************************
+void validateInt(string userIn, int& userInput)
+{
+	//This boolean will be used to confirm the entire loop for validation once it is set to true
+	bool isvalid = false;
+
+	//While boolean is NOT false
+	while (!isvalid) {
+
+		int counter = 0;
+		getline(cin, userIn);
+
+		//This loop will be checking for empty entries, spaces, and non-digit values
+		while (counter < userIn.length() || userIn.length() == 0)
+		{
+
+			if (userIn.empty())
+			{
+				cout << "Invalid entry. Please type a number." << endl;
+				getline(cin, userIn);
+				counter = 0;
+			}
+
+			else if (isalpha(userIn[counter]) || isspace(userIn[counter]) || ispunct(userIn[counter]))
+			{
+
+				cout << "Invalid entry. Try again." << endl;
+				getline(cin, userIn);
+				counter = 0;
+			}
+
+			else
+			{
+				counter++;
+			}
+
+		}
+
+		//stoi converts the string into an integer. 
+		userInput = stoi(userIn);
+
+		//Program won't go through if input is a negative number
+		if (userInput < 0)
+		{
+			cout << "Invalid entry. Try again." << endl;
+
+		}
+
+		else
+		{
+			//Boolean exits out
+			isvalid = true;
+		}
+
+	}
+
+}
+
+//***************************************************
+// Function makeArray 								*
+// This function dynamically allocates an array of  *
+// ints and returns a pointer to it. The parameter  *
+// size is the number of elements to allocate. 		*
+//***************************************************
+int *makeArray(int size)
+{
+	//Creating an array by using dynamic memory allocation 
+	int *arr = new int[size];
+	return arr;
+}
+//****************************************************
+// Function loadNumberData 							 *
+// This function loads the array with random numbers *
+//ranging in value from 1 to 100					 *
+//use pointer arithmetic to step through the array   *
+//****************************************************
+void loadNumberData(int *array, int size)
+{
+	//Initializing random seed
+	srand((unsigned)time(0));
+	for (int counter = 0; counter <size; counter++)
+	{
+		//Generating random numbers between 0 and 100 and storing them inside the array
+		*(array + counter) = (rand() % (100 - 0 + 0)) + 0;
+	}
+}
+//**************************************************
+//function displayArray							   *
+//this function displays the elements of the array * 
+//use pointer arithmetic to step through the array *
+//**************************************************
+void displayArray(int * numberData, int qtyOfRandomNumbers)
+{
+	//Displays the content inside the array
+	for (int counter = 0; counter < qtyOfRandomNumbers; counter++)
+	{
+		cout << *(numberData + counter) << " ";
+	}
+}
+//*************************************************
+// Function selectionSort 						  *
+// This function performs the selection sort 	  *
+// algorithm on array, sorting it into ascending  *
+// order. The parameter size holds the number of  *
+// elements in the array. 						  *
+//*************************************************
+void selectionSort(int array[], int size)
+{
+	//Selection sort algorithm to sort all values inside the array
+	int startScan, minIndex, minValue;
+
+	for (startScan = 0; startScan < (size - 1); startScan++)
+	{
+		minIndex = startScan;
+		minValue = array[startScan];
+		for (int index = startScan + 1; index < size; index++)
+		{
+			if (array[index] < minValue)
+			{
+				minValue = array[index];
+				minIndex = index;
+			}
+
+		}
+		array[minIndex] = array[startScan];
+		array[startScan] = minValue;
+	}
+}
+//***************************************************
+// Function average 							    *
+// This function calculates and returns the average *
+// of the values in the array arr. num is the 	    *
+// number of elements in the array.  				*
+//***************************************************
+double average(int *array, int size)
+{
+	//Creating a total variable to insert the sum of all values inside the array and dividing it by the size of it
+	double total = 0;
+	for (int counter = 0; counter < size; counter++)
+		total += *(array + counter);
+	return (total / size);
+}
+//**************************************************
+// Function median 								   *
+// This function displays the median of the values *
+// in the array pointed to by the parameter arr.   *
+// The num parameter holds the number of elements  *
+// in the array. 								   *
+//**************************************************
+double median(int *array, int size)
+{
+	//Variables to gather the median
+	int middle;
+	double med;
+
+	//Middle divides the size of the array by two in order to gather the middle value in between all values of the array
+	//Floor is being used in order to prevent acquiring a decimal value (i.e. 2.5 = 2, 11.5 = 11)
+	//Note: Older compilers may need "#include <math.h>" within the header for floor to be recognized
+	middle = floor(size / 2.0);
+
+	if (size % 2 == 0)
+		//Example (size = 6): (0 + 3 - 1) + (0 + 3) / 2 = (third value of array) + (fourth value of array) / 2 = med
+		med = (*(array + middle - 1) + *(array + middle)) / 2.0;
+	else
+		//Example (size = 5): floor(5 / 2) = 2; med = (0 + 2) = third value of array
+		med = *(array + middle);
+	return med;
+}
+//*********************************************************
+// Function mode 										  *
+// This function returns the mode of the array pointed to *
+// by arr. The mode is the value that appears most often. *
+// The parameter num holds the number of elements in the  *
+// array. If no element appears more than once, the 	  *
+// function returns -1. 								  *
+//*********************************************************
+int mode(int *array, int size)
+{
+	//The program will run two loops in order to compare each value one by one. For example, if the array has a size of 7,
+	//it starts the first loop within bracket [0] and compares itself going through the rest of the array brackets until it reaches [6]
+	//within the second loop. Once bracket [0] compares all array brackets within the second loop, it then goes back to the first loop 
+	//into bracket [1]. It then compares the rest of the brackets from [1] to [6], and so the process repeats. This comparing method is how 
+	//the program will find the mode of the array where both int "i" and "j" are used to separate and recognize each loop.
+
+	//Variables to start the loop
+	int highestFrequency = 0;
+	int currentFrequency;
+	int modevalue;
+
+	//Initilizes first loop
+	for (int i = 0; i < size; i++)
+	{
+		//Currentfrequency adds if it passes through line 267. Once the second loop finishes and comes back to loop one,
+		//this variable then resets itself back to 0.
+		currentFrequency = 0;
+
+		//Initializes second loop and compares the values within each array bracket one by one. Will run back to the first loop 
+		//once it's done.
+		for (int j = i; j<size; j++)
+		{
+			//If the compared values from each array bracket are the same...
+			if (*(array + i) == *(array + j))
+			{
+				//Increases current frequency
+				currentFrequency++;
+			}
+			//If currentfrequency becomes higher than higherfrequency, line 248 will change accordingly...
+			if (currentFrequency > highestFrequency)
+			{
+				//Currentfrequency changes the value of highest frequency and sets the mode value as a result
+				highestFrequency = currentFrequency;
+				modevalue = *(array + i);
+			}
+		}
+	}
+	//If highestfrequency value changes to at least two (finds a pair), it then returns the mode value
+	if (highestFrequency > 1)
+		return modevalue;
+	else
+		return -1;
+}

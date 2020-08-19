@@ -1,0 +1,102 @@
+#include <iostream>
+#include <string>
+#include "Game.h"
+#include "Addition.h"
+#include "Subtraction.h"
+#include "Multiplication.h"
+#include "Division.h"
+
+using namespace std;
+
+int main()
+{
+	//Class objects
+	Game mathgame;
+	Addition addition;
+	Subtraction subtraction;
+	Multiplication multiplication;
+	Division division;
+
+	//getline variables within menu
+	string choice;
+	char continu1 = 'y';
+	
+	//Outputs splashscreen, reequest name, and main menu by order
+	mathgame.splashScreen(); 
+	mathgame.requestName();
+	system("cls");
+	mathgame.menu();
+	
+	//While loop gives options from 1 - 5 in addition to exiting with 'n/N'
+	while (continu1 != 'n' && continu1 != 'N') 
+	{
+		getline(cin, choice);
+
+		//All choices use either the same or about the same function calls
+		if (choice == "1") {
+			addition.randomize(); //retrieves random numbers first
+			system("CLS");
+			cout << addition; //pulls the addition overload operator
+			mathgame.updateStats(addition.checkAnswer()); //takes public function result and updates stats
+			system("PAUSE");
+			system("CLS");
+			mathgame.menu(); //return to the main menu
+		}
+
+		else if (choice == "2") {
+			subtraction.randomize();
+			system("CLS");
+			cout << subtraction;
+			mathgame.updateStats(subtraction.checkAnswer());
+			system("PAUSE");
+			system("CLS");
+			mathgame.menu();		
+		}
+
+		else if (choice == "3") {
+			multiplication.randomize();
+			system("CLS");
+			cout << multiplication;
+			mathgame.updateStats(multiplication.checkAnswer());
+			system("PAUSE");
+			system("CLS");
+			mathgame.menu();		
+		}
+
+		else if (choice == "4") {
+			division.randomize();
+			system("CLS");
+			cout << division;
+			mathgame.updateStats(division.checkAnswer());
+			system("PAUSE");
+			system("CLS");
+			mathgame.menu();
+		}
+
+		else if (choice == "5") {
+			system("CLS");
+			mathgame.displayStats();
+			system("PAUSE");
+			system("CLS");
+			mathgame.menu();
+		}
+
+		//Exits loop
+		else if (choice == "n" || choice == "N")	
+		{
+			continu1 = 'n';
+		}
+
+		else {
+			cout << "Try again." << endl;
+		}
+
+	}
+
+	//Saves stats before closing along with a friendly good-bye message
+	mathgame.saveStats(); 
+	cout << "Thank you for playing. Come back soon!" << endl << endl;
+
+	system("pause");
+	return 0;
+}

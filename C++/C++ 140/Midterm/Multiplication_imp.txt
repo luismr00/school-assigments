@@ -1,0 +1,80 @@
+#include <ctime>
+#include <string>
+#include "Multiplication.h"
+
+
+
+Multiplication::Multiplication()
+{
+	theAnswer = 0;//variable to store the answer to the problem
+	userResponse = 0;//variable to store the user response to the problem in int format
+	randomize(); //Initializing randomize public function
+}
+
+
+void Multiplication::randomize()
+{
+	srand((unsigned)time(0));
+	num1 = (rand() % (10 - 1 + 1)) + 1;
+	num2 = (rand() % (10 - 1 + 1)) + 1;
+	theAnswer = num1 * num2; //Answer is the product of both random numbers
+}
+
+bool Multiplication::checkAnswer()
+{
+	string userEntry;
+
+	getline(cin, userEntry); 
+	validateUserEntry(userEntry); //validating and returning userEntry
+	userResponse = stoi(userEntry); // store validated "int" into userResponse
+
+	if (theAnswer == userResponse)
+
+	{
+		cout << "Correct!" << endl;
+		return true;        // This will add to the total numbers that the user answered correctly
+	}
+
+	else
+
+	{
+		cout << "Incorrect." << endl;
+		return false;         // This will subtract to the total numbers that the user answered incorrectly
+	}
+}
+
+void Multiplication::validateUserEntry(string& userEntry)
+{
+	int counter = 0;
+	int userEntryLength = userEntry.length(); //variable to check length
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < userEntryLength || userEntryLength == 0)
+	{
+		if (userEntryLength == 0)
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+
+		else if (!isdigit(userEntry[counter]))
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+		else
+		{
+			counter++;
+		}
+	}
+}
+
+ostream& operator<< (ostream& o, const Multiplication& a)
+{
+	o << a.num1 << " * " << a.num2 << " = " << endl; //Overloading
+	return o;
+}

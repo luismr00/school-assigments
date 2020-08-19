@@ -1,0 +1,57 @@
+//** FUTURE NOTE FOR MYSELF**//
+//cpp files must be removed in order for program to run, NOT deleted... 
+
+#include "Circle.h"
+
+template <typename Item>
+Circle<Item>::Circle()
+{
+	//post condition
+	//increment circleCount by 1
+	circleCount++;
+	circleRadius = 0;
+
+}
+
+
+template <typename Item>
+Circle<Item>::Circle(Item radius)
+{
+	//you will create a class template which results in the creation of objects of type “Item”
+	//post condition
+	//the radius may be an integer or a double
+	//radius >=0 and increment circleCount by 1
+	//in addition, if radius < 0, then throw ErrorAllocatingMemory exception
+
+	if (radius >= 0)
+	{
+		circleCount++;
+	}
+	else
+	{
+		throw ErrorAllocatingMemory(radius);
+	}
+}
+
+
+
+template <typename Item>
+int Circle<Item>::getCircleCount() const
+{
+	return circleCount;
+}
+
+template <typename Item>
+Item Circle<Item>::getCircleRadius() const
+{
+	//assigns the value of radius to circleRadius
+	return circleRadius;
+}
+
+
+template <typename Item>
+void Circle<Item>::setCircleRadius(Item radius)
+{
+	circleRadius = radius;
+}
+

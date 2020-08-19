@@ -1,0 +1,51 @@
+#pragma once
+
+template <class Item>
+class Circle
+{
+	//typedef Item valueType;
+public:
+	//constructor
+	Circle();
+
+	//overloaded constructor
+	Circle(Item radius);
+
+	//getters
+	int getCircleCount() const;
+	Item getCircleRadius() const;
+
+	//setters
+	void setCircleRadius(Item radius);
+
+	//exception class
+	class ErrorAllocatingMemory
+	{
+	//private members
+	private:
+		Item value;
+
+	public:
+		//constructor
+		ErrorAllocatingMemory(Item val)
+		{
+			value = val;
+		}
+		//getter
+		Item getValue() const
+		{
+			return value;
+		}
+
+	};
+
+//private members
+private:
+	Item circleRadius;
+	static int circleCount;
+};
+
+template <typename Item>
+int Circle<Item>::circleCount = 0;
+
+#include "Circle.cpp"

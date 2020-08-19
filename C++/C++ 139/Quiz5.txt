@@ -1,0 +1,201 @@
+//Headers required for the program
+#include <iostream>
+#include <string>
+#include <fstream> //This is the header that is required in order to use outputfiles
+
+using namespace std;
+
+//The following constant are used to separate several parts of the code, mainly the booleans
+void reverse(string, ofstream&);
+void even(string, ofstream&);
+void odd(string, ofstream&);
+void input(string&);
+
+
+int main()
+
+{
+
+	// The variables that will be needed within the program
+	string number;
+	string next = "y";
+	ofstream outputFile;
+
+	// The beginning of the outputfile 
+	outputFile.open("numbers.txt");
+
+	// The beginning of the boolean and primarily what the user will be seeing over the screen
+	while (next == "Y" || next == "y")
+	{
+		cout << "Enter an integer and press <Enter> " << "\n";
+
+		getline(cin, number);
+		input(number);
+
+		cout << "the original number is " << number << "\n";
+		outputFile << "the original number is " << number << "\n";
+
+		cout << "the number reversed is " << " ";
+		outputFile << "the number reversed is ";
+
+		//The code for the following constants is coded separately below. The code below is where all of the booleans needed occur. 
+		reverse(number, outputFile);
+		even(number, outputFile);
+		odd(number, outputFile);
+
+
+		cout << "Press Y/y to continue. Press any other key to exit. " << "\n";
+
+		getline(cin, next);
+
+	}
+
+	cout << "Good-Bye\n";
+
+	// The closure of the outputfile
+	outputFile.close();
+
+	system("pause");
+	return 0;
+
+}
+
+
+// Boolean for reversing the input number by the user
+void reverse(string input, ofstream & outputFile)
+{
+
+	for (int x = input.length() - 1; x >= 0; x--)
+	{
+		cout << input[x] << " ";
+		outputFile << input[x] << " ";
+	}
+
+	cout << "\n";
+	outputFile << "\n";
+
+}
+
+
+// Boolean for selecting the even numbers input by the user	
+void even(string input, ofstream & outputFile)
+{
+
+	int counter = 0;
+	bool evenNumbers = false;
+
+	while (counter < input.length())
+	{
+		if (input[counter] % 2 == 0)
+		{
+			evenNumbers = true;
+		}
+		counter++;
+	}
+
+	if (evenNumbers == true)
+	{
+		counter = 0;
+
+		cout << "the even numbers are " << " ";
+		outputFile << "the even numbers are ";
+
+		while (counter < input.length())
+		{
+			if (input[counter] % 2 == 0)
+			{
+				cout << input[counter] << " ";
+				outputFile << input[counter] << " ";
+			}
+
+			counter++;
+		}
+
+	}
+
+	else if (evenNumbers == false)
+	{
+		cout << "there are no even digits ";
+		outputFile << "there are no even digits ";
+	}
+
+	cout << "\n";
+	outputFile << "\n";
+}
+
+
+
+// Boolean for selecting the odd numbers input by the user	
+void odd(string input, ofstream & outputFile)
+{
+	int counter = 0;
+	bool oddNumbers = false;
+
+	while (counter < input.length())
+	{
+		if (input[counter] % 2 == 1)
+		{
+			oddNumbers = true;
+		}
+		counter++;
+	}
+
+	if (oddNumbers == true)
+	{
+		counter = 0;
+		cout << "the odd numbers are " << " ";
+		outputFile << "the odd numbers are " << " ";
+	}
+
+	while (counter < input.length())
+	{
+		if (input[counter] % 2 == 1)
+		{
+			cout << input[counter] << " ";
+			outputFile << input[counter] << " ";
+			oddNumbers = true;
+		}
+
+		counter++;
+
+	}
+
+	if (oddNumbers == false)
+	{
+		cout << "there are no odd digits";
+		outputFile << "there are no odd digits";
+	}
+
+	cout << "\n";
+	outputFile << "\n";
+}
+
+
+// The code that will be validating the users entries, making sure that there is no negative numbers or any other characters that aren't positive integers
+void input(string & number)
+{
+	int counter = 0;
+
+	while (counter < number.length() || number.length() == 0)
+	{
+		if (isalpha(number[counter]) || isspace(number[counter]) || ispunct(number[counter]))
+		{
+			cout << "Invalid entry, Try again! " << "\n";
+			getline(cin, number);
+			counter = 0;
+		}
+
+		else if (number.length() == 0)
+		{
+			cout << "Invalid entry, Try again! " << "\n";
+			getline(cin, number);
+			counter = 0;
+		}
+
+		else
+		{
+			counter++;
+		}
+
+	}
+}

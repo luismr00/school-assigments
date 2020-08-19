@@ -1,0 +1,26 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	//Following code requires float instead of int in order to be able to process decimal integers as needed
+	float one, two, three, four, five, average;
+
+	//'cin' allows users to input data into the screen where it can be seen following the variables from the code above
+	cout << "Enter the first number \n";
+	cin >> one;
+	cout << "Enter the second number \n";
+	cin >> two;
+	cout << "Enter the third number \n";
+	cin >> three;
+	cout << "Enter the fourth number \n";
+	cin >> four;
+	cout << "Enter the fifth number \n";
+	cin >> five;
+	
+	//The following code calculates all numbers from the variables inputted by the user and divides it into 5 in order to calculate the 'average'
+	average = (one + two + three + four + five) / 5;
+	cout << "The average of the five numbers is " << average << "\n";
+	return 0;
+}

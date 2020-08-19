@@ -1,0 +1,725 @@
+#include <iostream>
+#include <cstring>
+#include <cstdlib> //for rand() and srand()
+#include <ctime>   //for time
+
+
+using namespace std;
+
+//function prototypes
+void splashScreen();
+void resetGame(char grid[]);
+void displayGrid(char grid[], const int SIZE);
+void playerMakeMove(char grid[], int &totalMoves);
+bool checkPositionAvailability(char grid[], char playerMove, int gridCheck); 
+bool checkWin(char grid[]);
+bool checkTie(int totalMoves, bool game);
+void repeatGame(bool& repeat);
+void computerMakeMove(char grid[], int& totalMoves);
+int makeBestMove(char grid[]);
+
+//set constants
+const int SIZE = 9;
+const int MAX = 8, MIN = 0;
+
+int main()
+{
+	char grid[SIZE]; //single dimension array to be used 
+	bool repeat = true; //game will keep running as long as bool is true
+
+	splashScreen(); //displays credits
+
+	while (repeat)
+	{
+		int totalMoves = 0; //tracks total moves and is used to switch between user and AI. User's turn occurs whenever the variable equals an even number 
+		bool game = false; //boolean is used to determine win or tie and continues to run as long as it's false
+		
+		system("cls");
+		resetGame(grid); //resets the game
+		displayGrid(grid, SIZE); //shows board
+
+		while (game == false)
+		{
+			if (totalMoves % 2 == 0) //same as line 34
+			{
+				playerMakeMove(grid, totalMoves);
+				displayGrid(grid, SIZE);
+				game = checkWin(grid); //if checkWin return true, the game stops
+
+				if (game == true) {
+					cout << ">_< ... Lucky. Next time I'll program hard mode on you..." << endl;
+				}
+
+				game = checkTie(totalMoves, game); //if checkTie returns true, the game stops
+			}
+			else //total moves should be even numbers. Therefore, it will be the computer's turn
+			{
+				computerMakeMove(grid, totalMoves);
+				displayGrid(grid, SIZE);
+				game = checkWin(grid);
+
+				if (game == true) {
+					cout << "You're terrible at this game..." << endl;
+				}
+
+				game = checkTie(totalMoves, game);
+			}
+		}
+		repeatGame(repeat); //self-explanatory 
+							
+
+	}
+	system("pause");
+	return 0;
+}
+
+void splashScreen()
+{
+	cout << "***************************\n";
+	cout << "***************************\n";
+	cout << "***************************\n";
+	cout << "*****" << "              " << "  ******\n";
+	cout << "*****" << "  TIC TAC TOE " << "  ******\n";
+	cout << "*****" << " By Luis Rangel " << "******\n";
+	cout << "*****" << "              " << "  ******\n";
+	cout << "*****" << "              " << "  ******\n";
+	cout << "***************************\n";
+	cout << "***************************\n";
+	cout << "***************************\n";
+	
+	system("pause");
+	system("cls");
+
+	cout << "\nNOTE: The computer takes the game VERY serious...\n\n";
+	system("pause");
+	system("cls");
+
+}
+
+
+void resetGame(char grid[])
+{
+	//arrays and their values
+	grid[0] = '0';
+	grid[1] = '1';
+	grid[2] = '2';
+	grid[3] = '3';
+	grid[4] = '4';
+	grid[5] = '5';
+	grid[6] = '6';
+	grid[7] = '7';
+	grid[8] = '8';
+
+}
+
+void displayGrid(char grid[], const int SIZE)
+{
+	cout << "         TIC TAE TOE       \n\n";
+	cout << "        |-----------|\n";
+	cout << "        | " << grid[0] << " | " << grid[1] << " | " << grid[2] << " |\n";
+	cout << "        |-----------|\n";
+	cout << "        | " << grid[3] << " | " << grid[4] << " | " << grid[5] << " |\n";
+	cout << "        |-----------|\n";
+	cout << "        | " << grid[6] << " | " << grid[7] << " | " << grid[8] << " |\n";
+	cout << "        |-----------|\n\n\n";
+}
+
+void playerMakeMove(char grid[], int &totalMoves)
+{
+	char playerMove;  
+	int gridCheck = 9; 
+	int count;
+	bool validateMove = false; //if bool converts to true, it exits the loop
+
+	cout << "It's your turn human.\n";
+	cout << "Give me your best shot!";
+
+	while (validateMove == false)
+	{
+		playerMove = cin.get();
+		count = 0; // count is used to track the amount of characters from the user's entries
+		
+		//checks first for new lines and repeats the loop if so
+		if (playerMove == '\n')
+		{
+			validateMove = false;
+		}
+		
+		while (playerMove != '\n')
+		{
+			count++;
+			if (count != 1) //if multiple characters are entered, it kicks the user back to try again
+			{
+				validateMove = false;
+			}
+			else if (count == 1 && playerMove == '0') 
+			{
+				gridCheck = 0;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck); 
+			}
+			else if (count == 1 && playerMove == '1')
+			{
+				gridCheck = 1;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '2')
+			{
+				gridCheck = 2;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '3')
+			{
+				gridCheck = 3;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '4')
+			{
+				gridCheck = 4;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '5')
+			{
+				gridCheck = 5;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '6')
+			{
+				gridCheck = 6;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '7')
+			{
+				gridCheck = 7;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else if (count == 1 && playerMove == '8')
+			{
+				gridCheck = 8;
+				validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+			}
+			else
+			{
+				validateMove = false; //if the user enters anything else invalid, it kicks the user back again
+			}
+			playerMove = getchar();
+		}
+
+		if (validateMove == false)
+		{
+			cout << "invalid move human. try again!"; //message will display anytime user's entry returns false
+		}
+	}
+	grid[gridCheck] = 'X'; //'X' is displayed within the grid for user's entries
+	totalMoves++; //adds into the count assuring next time it will be the computer's turn
+	system("cls");
+}
+
+
+
+bool checkWin(char grid[])
+{
+	//checks horizontally within the grid for win
+	if (grid[0] == grid[1] && grid[1] == grid[2])
+	{
+		return true;
+	}
+	else if (grid[3] == grid[4] && grid[4] == grid[5])
+	{
+		return true;
+	}
+	else if (grid[6] == grid[7] && grid[7] == grid[8])
+	{
+		return true;
+	}
+
+	//check vertically within the grid for win
+	else if (grid[0] == grid[3] && grid[3] == grid[6])
+	{
+		return true;
+	}
+	else if (grid[1] == grid[4] && grid[4] == grid[7])
+	{
+		return true;
+	}
+	else if (grid[2] == grid[5] && grid[5] == grid[8])
+	{
+		return true;
+	}
+
+	//checks diagonally within the grid for win
+	else if (grid[0] == grid[4] && grid[4] == grid[8])
+	{
+		return true;
+	}
+	else if (grid[2] == grid[4] && grid[4] == grid[6])
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool checkTie(const int totalMoves, bool game)
+{
+	if (totalMoves == 9) //if the combined attempts between the user and AI reach 9 entries, the game will tie
+	{
+		cout << "Draws are unacceptable. Have some pride...\n";
+		return true;
+	}
+	else if (game == true)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void repeatGame(bool &repeat)
+{
+
+	char repeatChar;
+	int repeatCount = 0; //checks for amounts of characters the user types
+	cout << "Want to go again human? Press Y/y, anything else will close the game.";
+	repeatChar = cin.get();
+
+	//if user presses enter, it leaves the program
+	if (repeatChar == '\n')
+	{
+		repeat = false;
+		cout << "\n:( ... Fine... Leave..." << endl;
+	}
+
+	while (repeatChar != '\n')
+	{
+		repeatCount++; 
+		if (repeatCount != 1) //leaves the program if multiple characters where entered
+		{
+			repeat = false;
+			cout << "\n:( ... Fine... Leave..." << endl;
+		}
+		else if (repeatCount == 1 && (repeatChar == 'y' || repeatChar == 'Y')) //continues the program
+		{
+			repeat = true;
+		}
+		else
+		{
+			repeat = false; //insures anything else will exit the program
+			cout << "\n:( ... Fine... Leave..." << endl;
+		}
+		repeatChar = getchar();
+	}
+}
+
+bool checkPositionAvailability(char grid[], char playerMove, int gridCheck)
+{
+	if (grid[gridCheck] == playerMove) //if both variables match, true will exit the loop wherever it is being used
+	{
+		return true;
+	}
+	return false;
+}
+
+void computerMakeMove(char grid[], int& totalMoves)
+{
+	int num; //variable used to catch random number
+	char playerMove;
+	int gridCheck = 9;
+	bool validateMove = false;
+
+
+		while (validateMove == false)
+		{
+			playerMove = makeBestMove(grid); //program will check for best moves first
+
+			//if makeBestMove returns any of the following values, it will validate and check the grid instead of searching and selecting a random number
+			if (playerMove == 0, 1, 2, 3, 4, 5, 6, 7, 8) { 
+				if (playerMove == 0)
+				{
+					playerMove = '0';
+					gridCheck = 0;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 1)
+				{
+					playerMove = '1';
+					gridCheck = 1;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 2)
+				{
+					playerMove = '2';
+					gridCheck = 2;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 3)
+				{
+					playerMove = '3';
+					gridCheck = 3;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 4)
+				{
+					playerMove = '4';
+					gridCheck = 4;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+
+				if (playerMove == 5)
+				{
+					playerMove = '5';
+					gridCheck = 5;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 6)
+				{
+					playerMove = '6';
+					gridCheck = 6;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 7)
+				{
+					playerMove = '7';
+					gridCheck = 7;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == 8)
+				{
+					playerMove = '8';
+					gridCheck = 8;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+			}
+
+			//if makeBestMove did not find any options, then it will continue with acquiring a random number instead
+			if (playerMove == -1) {
+
+				//Random number generator block. The program takes longer to respond if the options are limited for the computer (especially near a tie).
+				//Please be patient for the computer to respond back with a random number.
+				unsigned seed = time(0);
+				srand(seed);
+				int num = (rand() % (MAX - MIN + MIN)) + MIN;
+
+				//following code turns the random number into a char
+				if (num == 0)
+				{
+					playerMove = '0';
+				}
+				else if (num == 1)
+				{
+					playerMove = '1';
+				}
+				else if (num == 2)
+				{
+					playerMove = '2';
+				}
+				else if (num == 3)
+				{
+					playerMove = '3';
+				}
+				else if (num == 4)
+				{
+					playerMove = '4';
+				}
+				else if (num == 5)
+				{
+					playerMove = '5';
+				}
+				else if (num == 6)
+				{
+					playerMove = '6';
+				}
+				else if (num == 7)
+				{
+					playerMove = '7';
+				}
+				else if (num == 8)
+				{
+					playerMove = '8';
+				}
+
+
+				//validates the returned value from the random number
+				if (playerMove == '0')
+				{
+					gridCheck = 0;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '1')
+				{
+					gridCheck = 1;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '2')
+				{
+					gridCheck = 2;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '3')
+				{
+					gridCheck = 3;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '4')
+				{
+					gridCheck = 4;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+
+				if (playerMove == '5')
+				{
+					gridCheck = 5;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '6')
+				{
+					gridCheck = 6;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '7')
+				{
+					gridCheck = 7;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+				if (playerMove == '8')
+				{
+					gridCheck = 8;
+					validateMove = checkPositionAvailability(grid, playerMove, gridCheck);
+				}
+			}
+		}
+
+	grid[gridCheck] = 'O'; //marks computer's entries as 'O'
+	totalMoves++; //variable's count adds assuring the user's turn to be next
+	system("cls");
+}
+
+//While the computer attempts to win at all costs, the following options still allow a chance for the user to win if he/she is familiar with the possible winning options
+int makeBestMove(char grid[])
+{
+	//if the user does not take center, the computer will in order to decrease the user's winning options
+	if (grid[4] == '4') {
+		return 4;
+	}
+
+	//Horizontal winning chances for the computer
+	else if (grid[0] == '0' && grid[1] == 'O' && grid[2] == 'O') {
+		return 0;
+	}
+	else if (grid[0] == 'O' && grid[1] == '1' && grid[2] == 'O') {
+
+		return 1;
+	}
+	else if (grid[0] == 'O' && grid[1] == 'O' && grid[2] == '2') {
+
+		return 2;
+	}
+	else if (grid[3] == '3' && grid[4] == 'O' && grid[5] == 'O') {
+
+		return 3;
+	}
+	else if (grid[3] == 'O' && grid[4] == '4' && grid[5] == 'O') {
+
+		return 4;
+	}
+	else if (grid[3] == 'O' && grid[4] == 'O' && grid[5] == '5') {
+
+		return 5;
+	}
+	else if (grid[6] == '6' && grid[7] == 'O' && grid[8] == 'O') {
+
+		return 6;
+	}
+	else if (grid[6] == 'O' && grid[7] == '7' && grid[8] == 'O') {
+
+		return 7;
+	}
+	else if (grid[6] == 'O' && grid[7] == 'O' && grid[8] == '8') {
+
+		return 8;
+	}
+
+	//Vertical winning options for the computer
+	else if (grid[0] == '0' && grid[3] == 'O' && grid[6] == 'O') {
+
+		return 0;
+	}
+	else if (grid[0] == 'O' && grid[3] == '3' && grid[6] == 'O') {
+
+		return 3;
+	}
+	else if (grid[0] == 'O' && grid[3] == 'O' && grid[6] == '6') {
+
+		return 6;
+	}
+	else if (grid[1] == '1' && grid[4] == 'O' && grid[7] == 'O') {
+
+		return 1;
+	}
+	else if (grid[1] == 'O' && grid[4] == '4' && grid[7] == 'O') {
+
+		return 4;
+	}
+	else if (grid[1] == 'O' && grid[4] == 'O' && grid[7] == '7') {
+
+		return 7;
+	}
+	else if (grid[2] == '2' && grid[5] == 'O' && grid[8] == 'O') {
+
+		return 2;
+	}
+	else if (grid[2] == 'O' && grid[5] == '5' && grid[8] == 'O') {
+
+		return 5;
+	}
+	else if (grid[2] == 'O' && grid[5] == 'O' && grid[8] == '8') {
+
+		return 8;
+	}
+
+	//Diagonal winning options for the computer
+	else if (grid[0] == '0' && grid[4] == 'O' && grid[8] == 'O') {
+
+		return 0;
+	}
+	else if (grid[0] == 'O' && grid[4] == '4' && grid[8] == 'O') {
+
+		return 4;
+	}
+	else if (grid[0] == 'O' && grid[4] == 'O' && grid[8] == '8') {
+
+		return 8;
+	}
+	else if (grid[2] == '2' && grid[4] == 'O' && grid[6] == 'O') {
+
+		return 2;
+	}
+	else if (grid[2] == 'O' && grid[4] == '4' && grid[6] == 'O') {
+
+		return 4;
+	}
+	else if (grid[2] == 'O' && grid[4] == 'O' && grid[6] == '6') {
+
+		return 6;
+	}
+
+	//Computer will prevent the user from winning if it founds any winning conditions from the user
+	//horizontal winning options from the user
+	else if (grid[0] == '0' && grid[1] == 'X' && grid[2] == 'X') {
+	
+		return 0;
+	}
+	else if (grid[0] == 'X' && grid[1] == '1' && grid[2] == 'X') {
+
+		return 1;
+	}
+	else if (grid[0] == 'X' && grid[1] == 'X' && grid[2] == '2') {
+
+		return 2;
+	}
+
+	else if (grid[3] == '3' && grid[4] == 'X' && grid[5] == 'X') {
+
+		return 3;
+	}
+	else if (grid[3] == 'X' && grid[4] == '4' && grid[5] == 'X') {
+
+		return 4;
+	}
+	else if (grid[3] == 'X' && grid[4] == 'X' && grid[5] == '5') {
+
+		return 5;
+	}
+
+	else if (grid[6] == '6' && grid[7] == 'X' && grid[8] == 'X') {
+
+		return 6;
+	}
+	else if (grid[6] == 'X' && grid[7] == '7' && grid[8] == 'X') {
+
+		return 7;
+	}
+	else if (grid[6] == 'X' && grid[7] == 'X' && grid[8] == '8') {
+
+		return 8;
+	}
+
+	//vertical winning options from the user
+	else if (grid[0] == '0' && grid[3] == 'X' && grid[6] == 'X') {
+
+		return 0;
+	}
+	else if (grid[0] == 'X' && grid[3] == '3' && grid[6] == 'X') {
+
+		return 3;
+	}
+	else if (grid[0] == 'X' && grid[3] == 'X' && grid[6] == '6') {
+
+		return 6;
+	}
+
+	else if (grid[1] == '1' && grid[4] == 'X' && grid[7] == 'X') {
+
+		return 1;
+	}
+	else if (grid[1] == 'X' && grid[4] == '4' && grid[7] == 'X') {
+
+		return 4;
+	}
+	else if (grid[1] == 'X' && grid[4] == 'X' && grid[7] == '7') {
+
+		return 7;
+	}
+
+	else if (grid[2] == '2' && grid[5] == 'X' && grid[8] == 'X') {
+
+		return 2;
+	}
+	else if (grid[2] == 'X' && grid[5] == '5' && grid[8] == 'X') {
+
+		return 5;
+	}
+	else if (grid[2] == 'X' && grid[5] == 'X' && grid[8] == '8') {
+
+		return 8;
+	}
+
+	//diagonal winning options from the user
+	else if (grid[0] == '0' && grid[4] == 'X' && grid[8] == 'X') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 0;
+	}
+	else if (grid[0] == 'X' && grid[4] == '4' && grid[8] == 'X') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 4;
+	}
+	else if (grid[0] == 'X' && grid[4] == 'X' && grid[8] == '8') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 8;
+	}
+	else if (grid[2] == '2' && grid[4] == 'X' && grid[6] == 'X') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 2;
+	}
+	else if (grid[2] == 'X' && grid[4] == '4' && grid[6] == 'X') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 4;
+	}
+	else if (grid[2] == 'X' && grid[4] == 'X' && grid[6] == '6') {
+		cout << "You think you're so good, don't you?" << endl;
+		system("pause");
+		return 6;
+	}
+	else {
+		return -1; //-1 is used to validate nothing from the listed makeBestMove options were found. Therefore, it will comfirm to start finding a random number instead
+	}
+
+}

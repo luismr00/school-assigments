@@ -1,0 +1,152 @@
+//EmployeeInfo.java
+
+// ******************************************************************* //
+// Seperate this class file to it's own file if you ever recompile it. //
+// ******************************************************************* //
+
+import java.util.Scanner;
+import java.lang.String;
+
+public class EmployeeInfo {
+
+    private int size;
+    private int[] empId;
+    private int[] payRate;
+    private int[] wages;
+    private int[] hours;
+    public int workedHours; 
+    public int hourlyPay;
+
+    public EmployeeInfo(int size) {
+        this.size = size;
+        empId = new int[size];
+        payRate = new int[size];
+        wages = new int[size];
+        hours = new int[size];
+    }
+
+    public void GetEmployeeInfo() {
+
+        System.out.println("Enter the requested information for each employee");
+
+        for (int i = 0; i < this.size; i++) {
+
+            empId[i] = i + 1; //employee id starts at 1 and goes up
+            System.out.println("Employee #" + empId[i]);
+            System.out.print("\thours worked: ");
+            validateHoursWorked();
+            hours[i] = workedHours;
+            System.out.print("\tPay rate: ");
+            validatePayRate();
+            payRate[i] = hourlyPay;
+            wages[i] = hours[i] * payRate[i];
+        }
+
+    }
+
+    public void validateHoursWorked() {
+        
+        String str;
+        Boolean isDigit = false;
+        Scanner input = new Scanner(System.in);
+
+        str = input.nextLine();
+
+        while (isDigit == false) {
+            isDigit = str.matches("[0-9]+");
+
+            if (isDigit == false) {
+                System.out.println("Please enter a number. Try Again.");
+                str = input.nextLine();
+            } 
+            else { //isDigit would be true
+                
+                workedHours = Integer.parseInt(str);
+
+                //validate if the workedHours validated is in between 0 - 40 only
+                if (!(workedHours <= 40 && workedHours >= 0)) {
+                    System.out.println("Hours worked must be greater than 0 but less than or equal to 40");
+                    str = input.nextLine();
+                    isDigit = false;
+                }
+
+                
+            }
+        }
+        
+    }
+
+    public void validatePayRate() {
+       
+        String str;
+        Boolean isDigit = false;
+        Scanner input = new Scanner(System.in);
+
+        str = input.nextLine();
+        
+            while (isDigit == false) {
+                isDigit = str.matches("[0-9]+");
+        
+                if (isDigit == false) {
+                    System.out.println("Please enter a number. Try Again.");
+                    str = input.nextLine();
+                } 
+                else { //isDigit would be true
+                    
+                    hourlyPay = Integer.parseInt(str);
+        
+                    //validate if the hourly pay validated is in between 5 - 15 only
+                    if (!(hourlyPay <= 15 && hourlyPay >= 5)) {
+                        System.out.println("Pay rate must be greater than $5 but less than or equal to $15");
+                        str = input.nextLine();
+                        isDigit = false;
+                    }
+                }
+            }
+    }
+
+    public void displayWages() {
+        System.out.println("-----------------------");
+        System.out.println("Employee\tWages");
+        System.out.println("-----------------------");
+
+        for (int counter = 0; counter < size; counter++) {
+
+            System.out.print("Employee #" + empId[counter] + "\t");
+            System.out.println("$" + wages[counter]);
+	    }
+
+    }
+}
+
+
+--------------------------------------------------------------------------------------
+
+//Application.java
+
+// ******************************************************************* //
+//  This program has been converted as similar as possible to Quiz7    //
+//  of C++. However, because JAVA cannot use reference variables like  //
+//  C++, classes were used even though C++ used functions instead.     //
+//  Regardless, classes are more useful on the long run, so the conv-  //
+//  ersion change was definitely worth for adapting to JAVA's own      //
+//  coding practices regarding reference variables.                    //
+//  ****************************************************************** //
+
+
+//reference variables not used and used classes instead
+
+import java.lang.String;
+
+public class Application {
+
+    public static void main(String[] args) {
+        
+        //create new object and pass number of employees - your contructor should set up arrays and size
+        EmployeeInfo employee = new EmployeeInfo(7);
+        //call getEmployeeInfo
+        employee.GetEmployeeInfo();
+        //call displayWages
+        employee.displayWages();
+    }
+}

@@ -1,0 +1,421 @@
+#include <iostream>
+#include <cstdlib>   //header for random numbers
+#include <ctime>     //time for random numbers
+#include <string>	 //string header
+#include <fstream>	 //header for creating and loading files
+#include <iomanip>   //setprecision for displaying 2 decimals
+#include <sstream>   //header to allow converting integers to strings
+
+
+using namespace std;
+
+// Function prototype with parameters needed accordingly
+void menu(string choice, string name, int  x, int  y, double  p);
+void addition(int &x, int &y);
+void subtraction(int &x, int &y);
+void multi(int &x, int &y);
+void division(int &x, int &y);
+void stat(string name, int x, int y, double& p);
+void validateUsername(string& name);
+void validateUserMenu(string choice, string name, int x, int y, double p);
+void validateUserAnswer(string answer);
+void loadFile(string name, int& x, int& y, double& p);
+void saveFile(string name, int x, int y, double p);      
+
+int main()
+{
+	//Local variables that will be used througout the program
+	ifstream inputFile;
+	ofstream outputFile;
+	string choice;
+	int x = 0;				//x equals to the right answers input from the user
+	int y = 0;				//y equals to the wrong answers input from the user
+	double p;				//p eauals to the addition and subtraction between the right and wrong answers from the user
+	string name;
+
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "**********   The MathGame    **********" << endl;
+	cout << "**********  by Luis Rangel   **********" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl;
+	cout << "***************************************" << endl << endl;
+
+	system("pause");
+	system("cls");    //Clears the screen and will be utilized throughout the program several times
+
+	cout << "Enter your name and press <Enter> : ";
+
+	validateUsername(name);			//Validates name and later helps naming the file to be created for the user 	
+
+	system("cls");
+
+	loadFile(name, x, y, p);		//Loads file depending if there is a file matched with the name 
+	menu(choice, name, x, y, p);	//Pulls menu
+
+	return 0;
+}
+
+void menu(string choice, string name, int x, int y, double p)
+{
+
+	cout << "********* Choose A Problem *********" << endl;
+	cout << "************************************" << endl;
+	cout << "************************************" << endl;
+	cout << "************" << " 1.ADD      " << "************" << endl;
+	cout << "************" << " 2.SUBTRACT " << "************" << endl;
+	cout << "************" << " 3.MULTIPLY  " << "***********" << endl;
+	cout << "************" << " 4.DIVISION  " << "***********" << endl;
+	cout << "************" << " 5.STATS     " << "***********" << endl;
+	cout << "************" << " 6.SAVE/EXIT " << "***********" << endl;
+	cout << "************************************" << endl;
+	cout << "************************************" << endl;
+
+	validateUserMenu(choice, name, x, y, p);	//Self-explanatory
+
+}
+
+//All mathematical functions (add, subtract, multi & div) follow the same format. Only the algorithms within each function change from which will be commentated.
+void addition(int &x, int &y)    
+{
+
+	//lines 87 - 89 get random numbers. They only produce numbers between 0 - 12.
+	srand((unsigned)time(0));        
+	int n1 = (rand() % (12 - 0 + 0)) + 0;
+	int n2 = (rand() % (12 - 0 + 0)) + 0;
+
+	string answer;
+
+	cout << "What is " << n1 << " + " << n2 << "? ";
+	getline(cin, answer);
+
+	//simple math algorithm for addition
+	int math = n1 + n2;         
+
+	//lines 101 - 103 is turning the integer to a string. This was needed in order for the validation below to work. 'int math' is converted to 'string result'.
+	std::stringstream ss;            
+	ss << math;					
+	string result = ss.str();
+
+	validateUserAnswer(answer);		//Self-explanatory
+
+	if (answer == result)
+
+	{
+
+		x++;            // This will add to the total numbers that the user answered correctly
+	}
+
+	else
+
+	{
+
+		y++;            // This will subtract to the total numbers that the user answered incorrectly
+	}
+
+
+}
+
+void subtraction(int &x, int &y)
+
+{
+
+	//Algorithm follows the second number always being smaller than the first in order to avoid negative numbers. Range is in between 0 - 50.
+	srand((unsigned)time(0));                   
+	int n1 = (rand() % (50 - 10 + 10)) + 10;
+	int n2 = (rand() % (10 - 0 + 0)) + 0;
+
+	string answer;
+
+	cout << "What is " << n1 << " - " << n2 << "? ";
+	getline(cin, answer);
+	
+	//Simple math algorithm for subtraction
+	int math = n1 - n2;
+
+	std::stringstream ss;
+	ss << math;
+	string result = ss.str();
+
+	validateUserAnswer(answer);
+
+
+	if (answer == result)
+
+	{
+
+		x++;
+
+	}
+
+	else
+
+	{
+		y++;
+
+	}
+
+}
+
+
+
+void multi(int &x, int &y)
+
+{
+	//Random numbers only produce integers between 0 - 12
+	srand((unsigned)time(0));
+	int n1 = (rand() % (12 - 0 + 0)) + 0;
+	int n2 = (rand() % (12 - 0 + 0)) + 0;
+
+	string answer;
+
+	cout << "What is " << n1 << " * " << n2 << "? ";
+	getline(cin, answer);
+
+	//Simple algorith for multiplication
+	int math = n1 * n2;
+
+	std::stringstream ss;
+	ss << math;
+	string result = ss.str();
+
+	validateUserAnswer(answer);
+
+	if (answer == result)
+
+	{
+		x++;
+	}
+
+	else
+	{
+		y++;
+	}
+
+}
+
+void division(int &x, int &y)
+
+{
+	//Random numbers only produce integers between 0 - 12
+	srand((unsigned)time(0));
+	int n1 = 1 + (rand() % 12);
+	int n2 = 1 + (rand() % 12);
+
+	
+	int numerator = n1 * n2;   //check line 217 below for further explanation
+	string answer;
+
+	cout << "What is " << numerator << " / " << n2 << "? ";         //check line 217 below for further explanation
+	getline(cin, answer);
+
+	//Since the requirement was to only perform division without any remainders, the algorithm shows that in order to not get remainders, n1 * n2 (which results as the numerator) ...
+	//will always be divided by one of the product numbers. The user will always be shown the numerator to be divided; Thus, making it easier to avoid any remainder.
+	int math = (n1 * n2) / n2;
+
+	std::stringstream ss;
+	ss << math;
+	string result = ss.str();
+
+	validateUserAnswer(answer);
+
+
+	if (answer == result)
+
+	{
+
+		x++;
+	}
+
+	else
+
+	{
+		y++;
+	}
+
+}
+
+
+void stat(string name, int x, int y, double& p)
+
+{
+	//lines 248 - 250 show simple algebra. 'x' and 'y' will always be updated. All that 'p' has to do is subtract both earned and lost variables however often they are updated.
+	double earned = x * 0.05;      
+	double lost = y * 0.03;
+	p = earned - lost;
+
+	cout << name << endl;
+	cout << "Total Earnings:" << "$";
+	cout << setprecision(2) << fixed << p << endl;
+	cout << "Total correct:" << x << endl;
+	cout << "Total incorrect:" << y << endl;
+}
+
+void validateUsername(string& name)    
+{
+	int counter = 0;
+	getline(cin, name);
+	
+	//The loop will ensure there is no space, digits, characters, and so on
+	while (counter < name.length() || name.length() == 0)
+	{
+
+		if (isspace(name[counter]) || ispunct(name[counter]) || isdigit(name[counter]) || name.empty())
+		{
+
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, name);
+			counter = 0;
+		}
+
+		else
+		{
+			counter++;
+		}
+
+	}
+
+}
+
+void validateUserMenu(string choice, string name, int x, int y, double p) {
+
+	getline(cin, choice);
+	int counter = 0;
+
+	//The entire loop ensure there are no empty entries as well as accept only entries between 1 - 6. 
+	while (counter < choice.length() || counter == 0)    
+	{
+
+		if (choice.empty()) {
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, choice);
+			counter = 0;
+		}
+
+		else if (choice == "1") {
+			system("CLS");
+			addition(x, y);
+			system("PAUSE");
+			system("CLS");
+			menu(choice, name, x, y, p); 	//This will ensure the user comes back to the menu after he performs the selected math of choice
+			
+		}
+
+
+		else if (choice == "2") {
+			system("CLS");
+			subtraction(x, y);
+			system("PAUSE");
+			system("CLS");
+			menu(choice, name, x, y, p);
+
+		}
+
+		else if (choice == "3") {
+			system("CLS");
+			multi(x, y);
+			system("PAUSE");
+			system("CLS");
+			menu(choice, name, x, y, p);
+		}
+
+		else if (choice == "4") {
+
+
+			system("CLS");
+			division(x, y);
+			system("PAUSE");
+			system("CLS");
+			menu(choice, name, x, y, p);
+		}
+
+		else if (choice == "5") {
+
+
+			system("CLS");
+			stat(name, x, y, p);
+			system("PAUSE");
+			system("CLS");
+			menu(choice, name, x, y, p);
+		}
+
+		else if (choice == "6") {
+			saveFile(name, x, y, p);        //saves the file and exits ONLY if the user presses '6'
+			cout << "Thank you for playing. Come back soon!" << endl << endl;
+			system("pause");
+			exit(0);
+
+		}
+
+		else if (choice != "1" || choice != "2" || choice != "3" || choice != "4" || choice != "5" || choice != "6")    //Validates for anything else that is not within the range listed
+		{
+			cout << "Invalid entry. Try again." << endl;
+			getline(cin, choice);
+			counter = 0;
+		}
+
+
+	}
+
+
+}
+
+void validateUserAnswer(string answer) {
+
+	int counter = 0;
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < answer.length() || answer.length() == 0)
+	{
+		if (answer.length() == 0)
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, answer);
+			counter = 0;
+		}
+
+		else if (isalpha(answer[counter]) || isspace(answer[counter]) || ispunct(answer[counter]))
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, answer);
+			counter = 0;
+		}
+
+
+		else
+		{
+			counter++;
+		}
+	}
+
+}
+
+void loadFile(string name, int& x, int& y, double& p) {
+	ifstream inputFile;
+
+	inputFile.open(name + ".txt");    //accesses the file based on username
+
+	inputFile >> name;
+	inputFile >> p;            		  //lines 404 - 407 retrieve content in the file and loads them. They will be showing under stats function.
+	inputFile >> x;
+	inputFile >> y;
+
+	inputFile.close();        		  //closes the file
+}
+
+void saveFile(string name, int x, int y, double p) {
+	ofstream outputFile;
+
+	outputFile.open(name + ".txt");    //creates the file
+	outputFile << name << endl;
+	outputFile << p << endl;           //lines 416 - 418 output content to the file
+	outputFile << x << endl;
+	outputFile << y << endl;
+
+	outputFile.close();        		  //closes the file
+}

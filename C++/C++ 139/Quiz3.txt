@@ -1,0 +1,41 @@
+#include <iostream>
+#include <cstdlib>		//header for rand and srand 
+#include <ctime> 		//header for the time function 
+#include <iomanip>		//header required for setprecision in order to generate decimals
+using namespace std;
+
+int main()
+{
+   //constants required in order to set the necessary values to use for the remainder variables
+   const int Min_Value = 1;
+   const int Max_Value = 10;
+   
+   //variables that will be used
+   int x, y; 
+   double sum, difference, product, quotient;
+   
+   //gets the system time
+   unsigned seed = time(0);
+   //seeds the random number generator
+   srand(seed);
+   
+   //formula to generate the necessary random numbers
+   x = (rand() % (Max_Value - Min_Value + 1)) + Min_Value;
+   y = (rand() % (Max_Value - Min_Value + 1)) + Min_Value;
+   
+   //variables with their perspective formulas. Note: quotients require to be set to double in order to consider decimals while dividing.
+   sum = x + y;
+   difference = x - y;
+   product =  x * y;
+   quotient = (double)x/(double)y; 
+   
+   //fixed and setprecision(2) allows the results to be shown with two decimals added in the end. Without fixed, the final result will not show decimals accordingly.
+   cout << fixed << setprecision(2);
+   //remaining output that will be shown within the screen
+   cout << "The sum of " << x << " + " << y << " = " << sum << "\n";
+   cout << "The difference of " << x << " - " << y << " = " << difference << "\n";
+   cout << "The product of " << x << " * " << y << " = " << product << "\n";
+   cout << "The quotient of " << x << " / " << y << " = " << quotient << "\n";
+   return 0;
+    
+}

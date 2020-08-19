@@ -1,0 +1,53 @@
+#pragma once
+
+template <typename Item, typename Item2>
+class Rectangle
+{
+	//typedef Item valueType1
+	//typedef Item valueType2;
+public:
+	//contructor
+	Rectangle();
+
+	//overloaded constructor
+	Rectangle(Item width, Item2 length);
+
+	//getters
+	int getRectangleCount() const;
+	Item getRectangleWidth() const;
+	Item2 getRectangleLength() const;
+
+	//setters
+	void setRectangleWidth(Item w);
+	void setRectangleLength(Item2 l);
+
+	//exception class
+	//the purpose of this class is to catch potential errors caused by negative values for the length or width of the rectangle
+	class ErrorAllocatingLengthOrWidth
+	{
+	private:
+		//private members
+		Item value;
+	public:
+		//constructor
+		ErrorAllocatingLengthOrWidth(Item val)
+		{
+			value = val;
+		}
+		Item getValue() const
+		{
+			//getter
+			return value;
+		}
+	};
+private:
+	//private members
+	Item rectangleWidth;
+	Item2 rectangleLength;
+	static int rectangleCount;
+};
+
+template <typename Item, typename Item2>
+int Rectangle<Item, Item2>::rectangleCount = 0;
+
+#include "Rectangle.cpp"

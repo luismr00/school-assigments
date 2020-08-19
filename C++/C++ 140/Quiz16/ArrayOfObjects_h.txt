@@ -1,0 +1,45 @@
+#pragma once
+
+#include "Circle.h"
+#include "Rectangle.h"
+
+template <typename Item>
+class ArrayOfObjects
+{
+	//typedef Item valueType;
+public:
+	//constructor
+	ArrayOfObjects();
+
+	//overloaded constructor
+	ArrayOfObjects(int arraySize);
+
+	//overload [] operator
+	Item &operator[](const int & x);
+
+	//exception class
+	class ErrorAllocatingPointerMemory
+	{
+	private:
+		//private members
+		int value;
+	public:
+		//constructor
+		ErrorAllocatingPointerMemory(int val)
+		{
+			value = val;
+		}
+		//getter
+		int getValue() const
+		{
+			return value;
+		}
+	};
+private:
+	//You must use pointer, you may call it ptrToArrayOfObjects
+	//User this pointer to store an array of objects of type "Item"
+	Item * ptrToArrayOfObjects;
+	int qtyOfObjects;
+};
+
+#include "ArrayOfObjects.cpp"

@@ -1,0 +1,110 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <iomanip> //For aligning the output
+
+using namespace std;
+
+//Structure containing necessary variables
+struct studentType
+{
+	string studentFName;
+	string studentLName;
+	int testScore;
+	char grade;
+};
+
+//Function prototype
+void makeArray(ifstream &, studentType[]);
+void calculateGrade(studentType[]);
+void highestTestScore(studentType[], int&);
+void outputDataFile(studentType[], int);
+
+
+int main() {
+
+	studentType student[20]; //Structure array
+	int highScore = 0; //Variable necessary to find out the students with the highest score
+
+	//Opening the file to work with
+	ifstream studentFile("Data.txt");
+
+	makeArray(studentFile, student); //Creating an array and storing data from file
+	calculateGrade(student); //Calculating the grade from the retrieved data
+	highestTestScore(student, highScore); //Finding out the highest score from the file
+	outputDataFile(student, highScore); //Outputing the data in a new manner to a new file
+
+	//Closing 'Data.txt' file
+	studentFile.close();
+
+	cout << "program complete" << endl;
+
+	system("pause");
+	return 0;
+}
+
+void makeArray(ifstream &studentFile, studentType student[])
+{
+	//Loop to retrieve the data inside 'Data.txt' and store it into the structure array
+	for (int counter = 0; counter < 20; counter++) {
+
+		studentFile >> student[counter].studentFName >> student[counter].studentLName >> student[counter].testScore;
+	}
+}
+
+void calculateGrade(studentType student[])
+{
+	//Loop for asigning a letter grade according to the test scores retrieved into the array 
+	for (int counter = 0; counter < 20; counter++) {
+		if (student[counter].testScore >= 90)
+			student[counter].grade = 'A';
+		else if (student[counter].testScore >= 80)
+			student[counter].grade = 'B';
+		else if (student[counter].testScore >= 70)
+			student[counter].grade = 'C';
+		else if (student[counter].testScore >= 60)
+			student[counter].grade = 'D';
+		else
+			student[counter].grade = 'F';
+	}
+}
+
+void highestTestScore(studentType student[], int& highScore)
+{
+	//Loop that calculates highest score
+	for (int counter = 0; counter < 20; counter++) {
+		if (highScore < student[counter].testScore) //if highest score is less than the test score
+			highScore = student[counter].testScore; //high score variable changes any time it finds a higher score as it goes through the array
+	}
+
+}
+
+void outputDataFile(studentType student[], int highScore)
+{
+	//Creating a new file for outputting new data
+	ofstream studentReport("Out.txt");
+
+	//setw used to align the data
+	studentReport << left << setw(20) << "Student Name" << right << setw(14) << "Test Score" << right << setw(10) << "Grade" << endl;
+
+	//Outputting the data from the structure array
+	for (int count = 0; count < 20; count++) {
+
+		//The following full name string allows the rest of the data to be align easier 
+		string name = student[count].studentLName + ", " + student[count].studentFName;  
+		studentReport << left << setw(20) << name << right << setw(10) << student[count].testScore << right << setw(12) << student[count].grade << endl;
+
+	}
+
+	studentReport << "\nThe highest Score is " << highScore << endl;
+	studentReport << "Students having the highest test score:" << endl;
+
+	//Loop will go through every content of the array and display the students that have the same high Score
+	for (int counter = 0; counter < 20; counter++) {
+		if (student[counter].testScore == highScore) 
+			studentReport << student[counter].studentLName << ", " << student[counter].studentFName << endl;
+	}
+
+	//Closing the new file
+	studentReport.close();
+}

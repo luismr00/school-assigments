@@ -1,0 +1,474 @@
+#include "myStringClass_h.h"
+
+//Overload the stream insertion and extraction operators
+ostream& operator << (ostream& o, const myStringClass* str)
+{
+	//use the stream insertion operator for a char array
+	o << str->userInput;
+	return o;
+}
+ostream& operator<< (ostream& o, const myStringClass& obj)
+{
+	//use the stream insertion operator for a char array
+	o << obj.userInput;
+	return o;
+}
+istream& operator >> (istream& in, myStringClass& obj)
+{
+	//create a char array to hold a line of input, then read it in from the istream using getline
+	if (obj.userInput != NULL)
+	{
+		delete[] obj.userInput;
+	}
+
+	obj.userInput = new char[256];
+	in.getline(obj.userInput, 256);
+	bool nullFound = false;
+	for (int i = 0; i < 256 && !nullFound; ++i)
+	{
+		if (obj[i] == '\0')
+		{
+			obj.userInputLength = i;
+			nullFound = true;
+		}
+	}
+
+	return in;
+}
+
+//default constructor
+myStringClass::myStringClass()
+{
+	//set the string to empty
+	userInputLength = 0;
+	userInput = NULL;
+}
+
+//overloaded constructors
+myStringClass::myStringClass(const char* str)
+{
+	//copy the characters of the string into a new array using the null character as an endpoint
+
+	int len = 0;
+	for (char const * c = str; (*c) != '\0'; ++c)
+	{
+		++len;
+	}
+	userInputLength = len;
+	userInput = new char[len + 1];
+	userInput[len] = '\0';
+	for (int i = 0; i < len; ++i)
+	{
+		userInput[i] = str[i];
+	}
+}
+
+myStringClass::myStringClass(const myStringClass &obj)
+{
+	//copy the contents of obj into the current string;
+
+	int otherStrLen = obj.stringLength();
+	userInput = new char[otherStrLen + 1];
+	userInputLength = otherStrLen;
+	userInput[otherStrLen] = '\0';
+	for (int i = 0; i < otherStrLen; ++i)
+	{
+		userInput[i] = obj.userInput[i];
+	}
+}
+
+//destructor
+myStringClass::~myStringClass()
+{
+	//if userInput exists, delete it
+	if (userInput != NULL)
+		delete[] userInput;
+}
+
+//getter
+int myStringClass::stringLength() const
+{
+	//return the length of the string not counting the null character
+	return userInputLength;
+}
+
+//overload =
+myStringClass& myStringClass::operator=(const myStringClass& obj)
+{
+
+	//copy the contents of obj into the current string, deleting the old 
+	//current string if it already exists
+	if (userInput != NULL)
+		delete[] userInput;
+
+	int otherStrLen = obj.stringLength();
+	userInput = new char[otherStrLen + 1];
+	userInputLength = otherStrLen;
+	userInput[otherStrLen] = '\0';
+	for (int i = 0; i < otherStrLen; ++i)
+	{
+		userInput[i] = obj.userInput[i];
+	}
+
+	return *this;
+}
+
+//overload []
+char& myStringClass::operator[](int index)
+{
+	//return a character reference at a certain index
+	return userInput[index];
+}
+
+//const overload []
+//const char& operator[](int index);
+
+//overload +//the concatenation operator
+myStringClass& myStringClass::operator+(const myStringClass& obj)
+{
+	//concantenate two strings and return a newly allocated string as the result
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	int totalLength = myLen + otherLen;
+
+	char *newStr = new char[totalLength + 1];
+	newStr[totalLength] = '\0';
+	for (int i = 0; i < myLen; ++i)
+	{
+		newStr[i] = userInput[i];
+	}
+
+	for (int i = 0; i < otherLen; ++i)
+	{
+		newStr[i + myLen] = obj.userInput[i];
+	}
+
+	myStringClass *newStrC = new myStringClass(newStr);
+	delete[] newStr;
+
+	return *newStrC;
+}
+
+//overload ==
+bool myStringClass::operator==(const myStringClass& obj)
+{
+
+	//if the lenghts are not equivalent, they are not equal. if the lenghts are equivalent
+	//make sure every character is the same
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	if (myLen == otherLen)
+	{
+		for (int i = 0; i < myLen; ++i)
+		{
+			if (userInput[i] != obj.userInput[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+//overload !=
+bool myStringClass::operator!=(const myStringClass& obj)
+{
+	//opposite of ==, make sure at least one character is different or the strings are a different length
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	if (myLen == otherLen)
+	{
+		for (int i = 0; i < myLen; ++i)
+		{
+			if (userInput[i] != obj.userInput[i])
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
+//the following all check "value" of a string based on character value. 
+//a shorter string that has the same characters as a longer string up to a certain point 
+//will be considered less. 
+
+//overload <=
+bool myStringClass::operator<=(const myStringClass& obj)
+{
+
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	int maxLen = otherLen;
+	if (myLen > otherLen)
+		maxLen = myLen;
+
+	for (int i = 0; i < maxLen; ++i)
+	{
+		//return if one of the strings is shorter than the other and they 
+		//have been even up till this point
+		if (i == myLen)
+		{
+			return true;
+		}
+		else if (i == otherLen)
+		{
+			return false;
+		}
+
+		//return if one of the characters is less or greater than the other
+		if (userInput[i] > obj.userInput[i])
+		{
+			return false;
+		}
+		else if (userInput[i] < obj.userInput[i])
+		{
+			return true;
+		}
+
+		//if the characters are even and you haven't hit the end of either string
+		//keep looping
+	}
+
+
+	//return true if equal
+	return true;
+}
+
+//overload <
+bool myStringClass::operator<(const myStringClass& obj)
+{
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	int maxLen = otherLen;
+	if (myLen > otherLen)
+		maxLen = myLen;
+
+	for (int i = 0; i < maxLen; ++i)
+	{
+		//return if one of the strings is shorter than the other and they 
+		//have been even up till this point
+		if (i == myLen)
+		{
+			return true;
+		}
+		else if (i == otherLen)
+		{
+			return false;
+		}
+
+		//return if one of the characters is less or greater than the other
+		if (userInput[i] > obj.userInput[i])
+		{
+			return false;
+		}
+		else if (userInput[i] < obj.userInput[i])
+		{
+			return true;
+		}
+		//if the characters are even and you haven't hit the end of either string
+		//keep looping
+	}
+
+	//return false if equal
+	return false;
+}
+
+//overload >=
+bool myStringClass::operator>=(const myStringClass& obj)
+{
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	int maxLen = otherLen;
+	if (myLen > otherLen)
+		maxLen = myLen;
+
+	for (int i = 0; i < maxLen; ++i)
+	{
+		//return if one of the strings is shorter than the other and they 
+		//have been even up till this point
+		if (i == myLen)
+		{
+			return false;
+		}
+		else if (i == otherLen)
+		{
+			return true;
+		}
+
+		//return if one of the characters is less or greater than the other
+		if (userInput[i] > obj.userInput[i])
+		{
+			return true;
+		}
+		else if (userInput[i] < obj.userInput[i])
+		{
+			return false;
+		}
+		//if the characters are even and you haven't hit the end of either string
+		//keep looping
+	}
+
+	//return true if equal
+	return true;
+}
+//overload >
+bool myStringClass::operator>(const myStringClass& obj)
+{
+	int myLen = stringLength();
+	int otherLen = obj.stringLength();
+	int maxLen = otherLen;
+	if (myLen > otherLen)
+		maxLen = myLen;
+
+	for (int i = 0; i < maxLen; ++i)
+	{
+		//return if one of the strings is shorter than the other and they 
+		//have been even up till this point
+		if (i == myLen)
+		{
+			return false;
+		}
+		else if (i == otherLen)
+		{
+			return true;
+		}
+
+		//return if one of the characters is less or greater than the other
+		if (userInput[i] > obj.userInput[i])
+		{
+			return true;
+		}
+		else if (userInput[i] < obj.userInput[i])
+		{
+			return false;
+		}
+		//if the characters are even and you haven't hit the end of either string
+		//keep looping
+	}
+
+	//return false if equal
+	return false;
+}
+
+//overload +=
+myStringClass myStringClass::operator+=(myStringClass& right)
+{
+	//concantenate the results of appening the string right onto the current string
+	//and store the results in the current string. if there is already a current string,
+	//delete it first
+
+	int myLen = stringLength();
+	int otherLen = right.stringLength();
+	int totalLength = myLen + otherLen;
+
+	char *newStr = new char[totalLength + 1];
+	newStr[totalLength] = '\0';
+	for (int i = 0; i < myLen; ++i)
+	{
+		newStr[i] = userInput[i];
+	}
+
+	for (int i = 0; i < otherLen; ++i)
+	{
+		newStr[i + myLen] = right.userInput[i];
+	}
+
+	if (userInput != NULL)
+		delete[] userInput;
+
+	userInputLength = totalLength;
+	userInput = newStr;
+
+	return *this;
+}
+
+void myStringClass::validateUserInput(myStringClass& myStringClassObject)
+{
+	//make sure each character in the string is an alpha character A-Z or a-z
+	//if the string isn't valid, show an error message and loop receiving input
+	//until a valid input has been received
+	bool stringValid;
+	do
+	{
+		cout << "\n";
+		stringValid = true;
+		int strLen = myStringClassObject.stringLength();
+		char tempC;
+
+		if (strLen == 0)
+		{
+			stringValid = false;
+			cout << "the string is empty" << endl;
+			cin >> myStringClassObject;
+		}
+		else
+		{
+			for (int i = 0; i < strLen && stringValid; ++i)
+			{
+				tempC = myStringClassObject[i];
+				if ((tempC >= 'A' && tempC <= 'Z') || (tempC >= 'a' && tempC <= 'z'))
+				{
+					//alpha character
+				}
+				else
+				{
+					stringValid = false;
+					cout << "that is not a name, try again" << endl;
+					cin >> myStringClassObject;
+				}
+			}
+		}
+
+	} while (!stringValid);
+}
+
+void myStringClass::validateUserInt(myStringClass& myStringClassObject)
+{
+	//make sure each character in the string is an integer character 0-9
+	//if the string isn't valid, show an error message and loop receiving input
+	//until a valid input has been received
+	bool intValid;
+	do
+	{
+		cout << "\n";
+		//cout << endl;
+		intValid = true;
+		int strLen = myStringClassObject.stringLength();
+		char tempC;
+
+		if (strLen == 0)
+		{
+			intValid = false;
+			cout << "the string is empty" << endl;
+			cin >> myStringClassObject;
+		}
+		else
+		{
+			for (int i = 0; i < strLen && intValid; ++i)
+			{
+				tempC = myStringClassObject[i];
+				if (tempC >= '0' && tempC <= '9')
+				{
+					//integer character
+				}
+				else
+				{
+					intValid = false;
+					cout << "that is not an integer, try again" << endl;
+					cin >> myStringClassObject;
+				}
+			}
+		}
+	} while (!intValid);
+}

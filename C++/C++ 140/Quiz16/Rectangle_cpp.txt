@@ -1,0 +1,75 @@
+//** FUTURE NOTE FOR MYSELF**//
+//cpp files must be removed in order for program to run, NOT deleted... 
+
+#include "Rectangle.h"
+
+//constructor
+template <class Item, class Item2>
+Rectangle<Item, Item2>::Rectangle()
+{
+	//post condition
+	//increment rectangleCount by 1
+	rectangleCount++;
+	rectangleWidth = 0;
+	rectangleLength = 0;
+}
+
+
+template <class Item, class Item2>
+Rectangle<Item, Item2>::Rectangle(Item width, Item2 length)
+{
+	//post condition
+	//the rectangleWidth may be an integer or a double
+	//the rectangleLength may be an integer or a double
+	//increment rectangleCount by 1
+	// rectangleWidth > 0
+	// rectangleLength > 0
+	//in addition, if rectangleWidth  < 0 or if rectangleLength  < 0, then throw ErrorAllocatingLengthOrWidth exception
+
+	rectangleCount++;
+	rectangleWidth = 0;
+	rectangleLength = 0;
+	if (width < 0)
+	{
+		throw ErrorAllocatingLengthOrWidth(width);
+	}
+	else if (length < 0)
+	{
+		throw ErrorAllocatingLengthOrWidth(length);
+	}
+	else
+	{
+		rectangleWidth = width;
+		rectangleLength = length;
+	}
+}
+
+//getters
+template <class Item, class Item2>
+int Rectangle<Item, Item2>::getRectangleCount() const
+{
+	return rectangleCount;
+}
+
+template <class Item, class Item2>
+Item Rectangle<Item, Item2>::getRectangleWidth() const
+{
+	return rectangleWidth;
+}
+template <class Item, class Item2>
+Item2 Rectangle<Item, Item2>::getRectangleLength() const
+{
+	return rectangleLength;
+}
+
+//setters
+template <class Item, class Item2>
+void Rectangle<Item, Item2>::setRectangleWidth(Item w)
+{
+	rectangleWidth = w;
+}
+template <class Item, class Item2>
+void Rectangle<Item, Item2>::setRectangleLength(Item2 l)
+{
+	rectangleLength = l;
+}

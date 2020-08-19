@@ -1,0 +1,20 @@
+#pragma once
+#ifndef INTEGER_H
+#define INTEGER_H
+
+using namespace std;
+
+//Class defintion with private and public functions
+class Integer
+{
+private:
+	int array[5];
+	int counter;
+public:
+	Integer();
+	void setUserEntry();
+	int validate(string);
+	void displayIntegers() const;
+	void getLargestSmallestIntegers();
+};
+#endif

@@ -1,0 +1,413 @@
+//Note: Professor, please read the note I left within canvas turn in page as to why I turned in two code assignments
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+//Function prototypes
+char *makeArray(int&);
+void lowerCaseDisplay(char *, int);
+void upperCaseDisplay(char *, int);
+
+int main()
+{
+		//variables to be passed and used throughout every function
+		char *array;
+		int countSize = 0; 
+
+		array = makeArray(countSize);
+		lowerCaseDisplay(array, countSize);
+		upperCaseDisplay(array, countSize);
+	
+
+	system("pause");
+	return 0;
+}
+
+char *makeArray(int& countSize) {
+
+	//Variables used to create an array and get its size using char variables w/o using strings. Temp1 and Temp2 pointers will allow the program
+	//to come up with a size and create an array.
+	char aChar; 
+	char *userInput = nullptr; 
+	char *temp1 = nullptr; 
+	char *temp2 = nullptr; 
+
+
+	cout << "Enter a string: ";
+	aChar = cin.get();
+
+	//loop goes through only if user entered characters
+	while (aChar != '\n') {
+
+		//variable will be used to come up for the size of the array
+		countSize++;
+
+		//this if statement only runs once since 'countSize' will keep increasing
+		if (countSize == 1) {
+			
+			//creates new pointer array and stores value(s) from cin.get()
+			temp1 = new char[countSize];
+			temp1[0] = aChar;
+			temp1[1] = NULL; //NULL = '\0' which is required in order for the program to know the length of the C-string towards the end
+		}
+
+		//loop will run depending Temp1 is declared nullptr or not
+		else if (temp1 == nullptr) {
+
+			//Creating a new pointer array
+			temp1 = new char[countSize];
+
+			//for loop is copying the Temp2 pointer array and storing it into Temp1
+			for (int i = 0; i < countSize - 1; i++) {
+				temp1[i] = temp2[i];
+			}
+
+			temp1[countSize - 1] = aChar; //adds the new char from cin.get() after copying characters
+			temp1[countSize] = NULL; //adds a '\0' to the last bracket of the array
+			temp2 = nullptr; //returns the copied pointer back to point to nothing
+			delete[] temp2; //deletes the content of the copied pointer for next use
+		}
+
+		//Same as previous loop with the exception that terms are reversed. Both loops allow the pointers to pass the content from one another
+		//in order create an array w/o knowing its actual size
+		else if (temp2 == nullptr) {
+
+			temp2 = new char[countSize];
+			for (int i = 0; i < countSize - 1; i++) {
+				temp2[i] = temp1[i];
+			}
+			temp2[countSize - 1] = aChar;
+			temp2[countSize] = NULL;
+			temp1 = nullptr;
+			delete[] temp1;
+		}
+
+		aChar = cin.get(); //gets the next character from the users input before repeating the loop
+	}
+
+	//if statement will create a separate array once pointers are finished gathering the characters from the users input depending upon the 
+	//temp pointer that gathered the last character
+	if (temp1 == nullptr) {
+
+		//passing the characters into userInput
+		userInput = new char[countSize + 1]; 
+		for (int i = 0; i < countSize; i++) {
+			userInput[i] = temp2[i];
+		}
+		userInput[countSize] = NULL;
+		temp2 = nullptr; //Following two lines are simply freeing unnecessary unused memory for best practice
+		delete[] temp2;
+	}
+
+	//Same as previous loop
+	else if (temp2 == nullptr) {
+		userInput = new char[countSize + 1];
+		for (int i = 0; i < countSize; i++) {
+			userInput[i] = temp1[i];
+		}
+		userInput[countSize] = NULL;
+		temp1 = nullptr;
+		delete[] temp1;
+	}
+
+	//Returns the retrieved array back into main
+	return userInput;
+
+}
+
+void lowerCaseDisplay(char *array, int size) {
+
+	//variables used to retrieve the frequency of each vowel
+	int aFrequency = 0;
+	int eFrequency = 0;
+	int iFrequency = 0;
+	int oFrequency = 0;
+	int uFrequency = 0;
+
+	//variables used to display the mode
+	char highestvowel;
+	int vowelfrequency = 0;
+
+	//For loop will check within the array for the 5 vowels and capture their frequencies
+	for (int i = 0; i < size; i++) {
+		if (*(array + i) == 'a')
+			
+			aFrequency++;
+
+		else if (*(array + i) == 'e')
+			
+			eFrequency++;
+		
+		else if (*(array + i) == 'i')
+		
+			iFrequency++;
+		
+		else if (*(array + i) == 'o')
+		
+			oFrequency++;
+		
+		else if (*(array + i) == 'u')
+		
+			uFrequency++;
+		
+	}
+
+	//Loop displays only if vowels were captured. If so, it displays the frequency of the vowels along with the mode.
+	if (aFrequency != 0 || eFrequency != 0 || iFrequency != 0 || oFrequency != 0 || uFrequency != 0)
+	{
+
+		//*********************************************************************//
+		//						Displaying vowels							   //
+		//If statements are used to display ONLY the vowels that were captured //
+		//*********************************************************************//
+
+		cout << "The lower case vowels which are present are:";
+
+		if (aFrequency != 0)
+		{
+			cout << " a(" << aFrequency << ")";
+		}
+		if (eFrequency != 0)
+		{
+			cout << " e(" << eFrequency << ")";
+		}
+		if (iFrequency != 0)
+		{
+			cout << " i(" << iFrequency << ")";
+		}
+		if (oFrequency != 0)
+		{
+			cout << " o(" << oFrequency << ")";
+		}
+		if (uFrequency != 0)
+		{
+			cout << " u(" << uFrequency << ")";
+		}
+
+
+		//************************************************************************//
+		//						Displaying the Mode							      //
+		//If statements compare each frequency variable in order to find the mode.//
+		//It first compares the 'a' vowel and passes its frequency to the vowel   //
+		//frequency. Later, vowelfrequency keeps comparing itself to the remaining//
+		//vowels and changes its value depending if it finds a higher value than  //
+		//what it retrieved previously. Lastly, if the vowelfrequency is the same //
+		//as at least one of the vowels, it will display the mode. Else, if two   //
+		//or more vowels have the same frequency, it will display no mode found.  //
+		//************************************************************************//
+
+		if (aFrequency > vowelfrequency)
+		{
+			highestvowel = 'a';
+			vowelfrequency = aFrequency;
+		}
+
+
+		if (eFrequency > vowelfrequency)
+		{
+			highestvowel = 'e';
+			vowelfrequency = eFrequency;
+		}
+
+		if (iFrequency > vowelfrequency)
+		{
+			highestvowel = 'i';
+			vowelfrequency = iFrequency;
+		}
+
+		if (oFrequency > vowelfrequency)
+		{
+			highestvowel = 'o';
+			vowelfrequency = oFrequency;
+		}
+		if (uFrequency > vowelfrequency)
+		{
+			highestvowel = 'u';
+			vowelfrequency = uFrequency;
+		}
+
+		cout << "\n";
+
+	
+
+		int counter = 0;
+
+		if (vowelfrequency == aFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == eFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == iFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == oFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == uFrequency)
+		{
+			counter++;
+		}
+
+		if (counter == 0 || counter > 1)
+		{
+			cout << "There is no highest frequency lower case vowel" << endl;
+		}
+		else
+		{
+			cout << "The highest frequency lower case vowel is '" << highestvowel << "' with a frequency of " << vowelfrequency << endl;
+		}
+	}
+
+	//if else, program will not bother displaying the mode
+	else
+	{
+		cout << "There are no lower case vowels" << endl;
+	}
+
+
+
+}
+
+//Function is same as lowerCaseDisplay except that the vowels are changed to upper case
+void upperCaseDisplay(char *array, int size)
+{
+	int aFrequency = 0;
+	int eFrequency = 0;
+	int iFrequency = 0;
+	int oFrequency = 0;
+	int uFrequency = 0;
+
+	char highestvowel;
+	int vowelfrequency = 0;
+
+	for (int i = 0; i < size; i++) {
+		if (*(array + i) == 'A')
+			
+			aFrequency++;
+	
+		else if (*(array + i) == 'E')
+		
+			eFrequency++;
+		
+		else if (*(array + i) == 'I')
+			
+			iFrequency++;
+		
+		else if (*(array + i) == 'O')
+			
+			oFrequency++;
+		
+		else if (*(array + i) == 'U')
+			
+			uFrequency++;
+		
+	}
+
+
+	if (aFrequency != 0 || eFrequency != 0 || iFrequency != 0 || oFrequency != 0 || uFrequency != 0)
+	{
+		cout << "The upper case vowels which are present are:";
+
+		if (aFrequency != 0)
+		{
+			cout << " A(" << aFrequency << ")";
+		}
+		if (eFrequency != 0)
+		{
+			cout << " E(" << eFrequency << ")";
+		}
+		if (iFrequency != 0)
+		{
+			cout << " I(" << iFrequency << ")";
+		}
+		if (oFrequency != 0)
+		{
+			cout << " O(" << oFrequency << ")";
+		}
+		if (uFrequency != 0)
+		{
+			cout << " U(" << uFrequency << ")";
+		}
+
+		cout << "\n";
+
+
+		if (aFrequency > vowelfrequency)
+		{
+			highestvowel = 'A';
+			vowelfrequency = aFrequency;
+		}
+
+
+		if (eFrequency > vowelfrequency)
+		{
+			highestvowel = 'E';
+			vowelfrequency = eFrequency;
+		}
+
+		if (iFrequency > vowelfrequency)
+		{
+			highestvowel = 'I';
+			vowelfrequency = iFrequency;
+		}
+
+		if (oFrequency > vowelfrequency)
+		{
+			highestvowel = 'O';
+			vowelfrequency = oFrequency;
+		}
+		if (uFrequency > vowelfrequency)
+		{
+			highestvowel = 'U';
+			vowelfrequency = uFrequency;
+		}
+
+
+		int counter = 0;
+
+		if (vowelfrequency == aFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == eFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == iFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == oFrequency)
+		{
+			counter++;
+		}
+		if (vowelfrequency == uFrequency)
+		{
+			counter++;
+		}
+
+		if (counter == 0 || counter > 1)
+		{
+			cout << "There is no highest frequency upper case vowel" << endl;
+		}
+		else
+		{
+			cout << "The highest frequency upper case vowel is '" << highestvowel << "' with a frequency of " << vowelfrequency << endl;
+		}
+	}
+	
+	else
+	{
+		cout << "There are no upper case vowels" << endl;
+	}
+
+
+}
+

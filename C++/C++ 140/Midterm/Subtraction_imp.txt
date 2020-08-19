@@ -1,0 +1,92 @@
+#include <ctime>
+#include <string>
+#include "Subtraction.h"
+
+
+
+Subtraction::Subtraction()
+{
+	theAnswer = 0;//variable to store the answer to the problem
+	userResponse = 0;//variable to store the user response to the problem in int format
+	randomize(); //Initializing randomize public function
+}
+
+
+void Subtraction::randomize()
+{
+	srand((unsigned)time(0));
+	num1 = (rand() % (10 - 1 + 1)) + 1;
+	num2 = (rand() % (10 - 1 + 1)) + 1;
+	theAnswer = num1 - num2; //Simple subtraction between random numbers
+
+	//Following loop activates ONLY if second random number is higher than the first. Loop will exit until the first random
+	//number is equal or higher than the second
+	while (num1 < num2) 
+	{
+		srand((unsigned)time(0));
+		num1 = (rand() % (10 - 1 + 1)) + 1;
+		num2 = (rand() % (10 - 1 + 1)) + 1;
+		theAnswer = num1 - num2;
+	}
+
+}
+
+bool Subtraction::checkAnswer()
+{
+	string userEntry;
+
+	getline(cin, userEntry);
+	validateUserEntry(userEntry); //validating and returning userEntry
+	userResponse = stoi(userEntry); // store validated "int" into userResponse
+
+
+	if (theAnswer == userResponse) //Checking whether answer will equal to userResponse
+
+	{
+		cout << "Correct!" << endl;
+		return true;        // This will add to the total numbers that the user answered correctly
+	}
+
+	else
+
+	{
+		cout << "Incorrect." << endl;
+		return false;         // This will subtract to the total numbers that the user answered incorrectly
+	}
+}
+
+void Subtraction::validateUserEntry(string& userEntry)
+{
+	int counter = 0;
+	int userEntryLength = userEntry.length();
+
+	//Loop ensures for ONLY digits and avoids empty entries as well
+	while (counter < userEntryLength || userEntryLength == 0)
+	{
+		if (userEntryLength == 0)
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+
+		else if (!isdigit(userEntry[counter]))
+		{
+			cout << "invalid entry. Type in a number." << endl;
+			getline(cin, userEntry);
+			counter = 0;
+			userEntryLength = userEntry.length();
+		}
+		else
+		{
+			counter++;
+		}
+	}
+}
+
+ostream& operator<< (ostream& o, const Subtraction& a)
+{
+	o << a.num1 << " - " << a.num2 << " = " << endl; //Overloading
+	return o;
+}
