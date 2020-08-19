@@ -26,8 +26,9 @@ There has been several school assignments that I have worked on more than what i
     * Final - Linked Lists
 
 * JAVA
- * Conversions
-   * Quiz 2 - Conversion from C++
-   * Quiz 3 - Conversion from C++
-   * Quiz 5 - Conversion from C++
-   * Quiz 7 - Conversion from C++
+  * Conversions
+    * Quiz 2 - Conversion from C++
+    * Quiz 3 - Conversion from C++
+    * Quiz 5 - Conversion from C++
+    * Quiz 7 - Conversion from C++
+    * MathGame with Classes - Conversion from C++
