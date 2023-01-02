@@ -1,0 +1,80 @@
+#lang racket
+
+(define (count-list-elements x)
+  (cond
+    ((empty? x ) 0)
+    (else (+ 1 (count-list-elements (cdr x))))
+    ))
+
+(define (rotate-list-left x)
+  (cond
+    ((empty? x) x)
+    ((empty? (cdr x)) x)
+    (else (append (cdr x) (list (car x))))
+    ))
+
+(define (rotate-list-left-n x n)
+  (cond
+  ((empty? x) x)
+  ((empty? (cdr x)) x)
+  ((equal? n 0) x)
+  (else (rotate-list-left-n (append (cdr x) (list (car x))) (- n 1)))
+  ))
+
+(define (list-element-n x n)
+  (cond
+  ((equal? n 0) (car x))
+  ((empty? x) x)
+  (else (list-element-n (cdr x) (- n 1)))
+  ))
+
+(define (list-minus-element-n x n)
+  (cond
+  ((equal? n 0) (cdr x))
+  ((empty? x) x)
+  (else (cons (car x)(list-minus-element-n (cdr x) (- n 1))))
+  ))
+
+(define listm '(a b c d e))
+
+(define (last-element l)
+  (cond
+    ((empty? (cdr l)) l)
+    (else (last-element (cdr l)))
+    ))
+
+(define (rotate-list-right x)
+  (cond
+    ((empty? x) x)
+    ((empty? (cdr x)) x)
+    (else (append(last-element x)(list-minus-element-n x (- (length x) 1))))
+    ))
+
+(define (reverse-list x)
+  (cond
+    ((empty? x) x)
+    ((empty? (cdr x)) x)
+    (else (append(reverse-list(cdr x))(list (car x))))
+    ))
+
+(define (cons-to-all a x)
+  (cond
+    ((empty? x) x)
+    (else (map(lambda(z)(cons a z)) x))
+    ))
+
+(define many-lists '((b c)(d e)(f g)))
+
+(define (get-combos x n)
+  (cond
+    ((equal? n 0) (cons-to-all(list-element-n x 0)(permute(list-minus-element-n x 0))))
+    (else (append(cons-to-all(list-element-n x (- n 1))(permute(list-minus-element-n x (- n 1))))(get-combos x (- n 1))))
+    ))
+
+(define (permute x)
+  (cond
+    ((equal? (length x) 0) x)
+    ((equal? (length x) 1) x)
+    ((equal? (length x) 2) (append (list x (reverse-list x))))
+    (else (get-combos (reverse-list x) (length x)))
+    ))

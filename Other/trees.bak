@@ -1,0 +1,266 @@
+#lang racket
+
+(struct bst-node (value left right count) #:mutable #:transparent)
+
+(define n1 (bst-node 5 empty empty 1))
+(define n2 (bst-node 10 empty empty 1))
+(define n3 (bst-node 15 empty empty 1))
+
+;extra node definitions for n2
+(define n4 (bst-node 7 empty empty 1))
+(define n5 (bst-node 20 empty empty 1))
+(define n6 (bst-node 1 empty empty 1))
+(define n7 (bst-node 14 empty empty 1))
+
+(set-bst-node-left! n2 n1)
+(set-bst-node-right! n2 n3)
+
+;adding extra nodes to n2 as in BST 
+(set-bst-node-right! n1 n4)
+(set-bst-node-left! n1 n6)
+(set-bst-node-right! n3 n5)
+(set-bst-node-left! n3 n7)
+
+(define (add-value-to-bst tree v)
+  (add-value-to-bst-subtree tree tree v))
+
+
+(define (add-value-to-bst-subtree tree subtree v)
+  (cond
+    ((and (< v (bst-node-value tree))(null? (bst-node-left tree)))
+     (set-bst-node-left! subtree (bst-node v empty empty 1)))   
+
+     
+    ((and (< v (bst-node-value tree))(not (null? (bst-node-left tree))))
+     (add-value-to-bst (bst-node-left subtree) v))
+
+     
+    ((and (> v (bst-node-value tree))(null? (bst-node-right tree)))
+     (set-bst-node-right! subtree (bst-node v empty empty 1)))  
+
+     
+    ((and (> v (bst-node-value tree))(not (null? (bst-node-right tree))))
+     (add-value-to-bst (bst-node-right subtree) v))
+
+    (else (set-bst-node-count! subtree (+ (bst-node-count subtree) 1))
+     
+    )))
+
+(define (traverse n)
+  (cond
+    ;If   n   is empty, value is the empty list
+    ((null? n) '())
+    ;If   left and right of n are both empty, value is value of n as a list
+    ((and (null? (bst-node-left n))(null? (bst-node-right n))
+          (list(bst-node-value n))))
+    ;If only left field is empty, value is value of n cons’ed to recursive call to right
+    ((and (null? (bst-node-left n))(not (null? (bst-node-right n)))
+          (cons (bst-node-value n)(traverse (bst-node-right n)))))
+    ;If only right field is empty, value is value of n cons’ed to recursive call to left
+    ((and (not (null? (bst-node-left n)))(null? (bst-node-right n))
+          (cons (traverse (bst-node-right n))(bst-node-value n))))
+    ;If neither is empty, value is recursive call to left, appended to value of n as list, appended to recursive call to right
+    (else (append (traverse(bst-node-left n))(list(bst-node-value n))(traverse(bst-node-right n))))
+    ))
+
+
+(define (get-random-in-range rng)
+  (inexact->exact (remainder (floor (* (random) (expt 2 31))) rng))  )
+
+(define (get-random-list-in-range rng count l)
+  (cond
+    ((= count 0) l)
+    (else (get-random-list-in-range rng (- count 1) (append l (list(get-random-in-range rng)))))
+   ))
+
+(define (contains? x n)
+  (cond
+    ((empty? x) #f)
+    ((= (car x) n) #t)
+    (else (contains? (cdr x) n))
+    ))
+
+(define (contains-duplicates? x)
+  (cond
+    ((or (empty? x)(= (length x) 1)) #f)
+    ((contains? (cdr x)(car x)) #t) 
+    (else (contains-duplicates? (cdr x)))
+  ))
+
+
+
+
+(define (add-random-to-list-unique x rng)
+  (add-random-to-list-unique-1 x (cons (get-random-in-range rng) x) rng))
+
+(define (add-random-to-list-unique-1 x y rng)
+  (cond
+    ((not (contains-duplicates? y)) y)
+    (else (add-random-to-list-unique-1 x (cons (get-random-in-range rng) (cdr y)) rng))
+  ))
+
+(define (get-random-list-in-range-unique rng count)
+  (cond
+     ((= count 1) (add-random-to-list-unique empty rng))
+     (else (append (add-random-to-list-unique (get-random-list-in-range-unique rng (- count 1)) rng)))
+  ))
+
+
+(define (is-sorted? x)
+  (cond
+    ((or (empty? x)(= (length x) 1)) #t)
+    (else (and (< (car x)(car (cdr x)))(is-sorted? (cdr x))))
+    ))
+
+
+
+(define (find-path v n)
+  (find-path-1 v n empty))
+
+(define (find-path-1 v n p)
+  (cond
+    ((empty? n) p)
+    ((= v (bst-node-value n))(cons n p))
+    ;cons n onto value of recursive call with n   replaced by left of n
+    ((< v (bst-node-value n))(cons n (find-path v (bst-node-left n))))
+    ;cons n onto value of recursive call with n   replaced by right of n FIX!!!
+    ;((> v (bst-node-value n))(cons (find-path v (bst-node-right n))(p)))
+    ((> v (bst-node-value n))(cons n (find-path v (bst-node-right n))))
+  ))
+
+;Example of a call for function below: (get-path-values (find-path 5 n2))
+(define (get-path-values p)
+  (cond
+    ((null? p) empty)
+    (else (cons (bst-node-value (car p)) (get-path-values (cdr p))))
+   ))
+
+(define (get-child-count n)
+  (cond
+    ((and (empty? (bst-node-left n))(empty? (bst-node-right n))) 0)
+    ((and (not (empty? (bst-node-left n)))(empty? (bst-node-right n))) 1)
+    ((and (empty? (bst-node-left n))(not (empty? (bst-node-right n)))) 1)
+    (else 2) 
+  )) 
+
+
+(define (find-inorder-prev n)
+  (cond
+    ((null? (bst-node-right (bst-node-left n))) (list (bst-node-left n) n))
+    (else (find-path-inorder-prev (bst-node-right (bst-node-left n)) (list(bst-node-left n) n)))
+    ))
+
+
+(define (find-path-inorder-prev n p)
+  (if (empty? (bst-node-right n)) (cons n p) (find-path-inorder-prev (bst-node-right n) (append p (list n)) ))
+  )
+
+
+
+;(define (delete-value-from-bst v tree)
+;  (delete-node-from-bst (reverse (find-path v tree)) tree))
+;
+;(define (delete-node-from-bst nl tree)
+;  (cond
+;    ; Node is root
+;    ((= (get-child-count tree) 0)
+;     (cond
+;       ((equal? tree (car nl)) empty)
+;       ((equal? (car nl) (bst-node-left (car (cdr nl)))) (set-bst-node-left! (car (cdr nl)) empty) tree)
+;       (else (set-bst-node-right! (car (cdr nl)) empty) tree)
+;;       ((contains? (map bst-node-left nl) tree)
+;        ;((< (car nl) (car(cdr nl))) (set-bst-node-left! (car(cdr nl)) empty))
+;        ;((> (car nl) (car(cdr nl))) (set-bst-node-right! (car(cdr nl)) null))
+;      ))
+;    (else tree)))
+;;    ((= (get-child-count tree) 1)
+;;     (cond
+;;       ((
+
+
+
+;Find path from root to value
+;If count of node to delete > 1, decrement count
+;Else must physically delete node
+
+;Child count of node to be deleted = 0
+
+   ;Three subcases (assume n is node to delete, p is parent of n, p can be null)
+      ;n is root (p is null)
+         ;n is the only node in the tree, after deletion, tree is empty
+      ;n is not root, n is left child of p
+         ;set left of p to null
+      ;n is not root, n is right child of p
+         ;set right of p to null
+
+
+;Child count = 1
+
+   ;Six subcases (assume n is node to delete, p is parent of n, p can be null, c is child of n)
+
+      ;n is root (p is null), c is left child of n
+         ;set root to left of n)
+      ;n is root (p is null), c is right child of n
+         ;set root to right of n
+      ;n is not root, n is left child of p, c is left child of n
+         ;set left of p to left of n
+      ;n is not root, n is left child of p, c is right child of n
+         ;set left of p to right of n
+      ;n is not root, n is right child of p,  c is left child of n
+         ;set right of p to left of n
+      ;n is not root, n is right child of p,  c is right child of n
+         ;set right of p to right of n
+
+
+;Child count = 2
+   ;No easy way to delete n directly without rotations or other adjustments, easier to find
+   ;inorder predecessor of n, swap values between n and pred, and delete pred
+
+      ;Child count of pred = 0
+
+         ;Two subcases
+            ;pred is left child of parent
+               ;set left of parent to empty
+            ;pred is right child of its parent
+               ;set right of parent to empty
+
+      ;Child count of pred = 1
+
+         ;Two subcases
+            ;pred is left child of its parent
+               ;set left of parent to left of pred
+            ;pred is right child of its parent
+               ;set right of parent to left of pred
+         ;note that in both of these cases, child of pred must be left child
+
+      ;Child count of pred = 2
+         ;Excluded, not possible for pred to have 2 child nodes
+
+(define number 0)
+
+(define (add-to-x x)
+  ;(set-number 1)
+  (+ x 2)
+ )
+
+; entry point for delete 
+; calls helper function 
+; uses find-path to find path from root to node to be deleted 
+; reverses path so that path is nl, node to delete is (car nl), parent is (car (cdr nl)) 
+ 
+(define (delete-value-from-bst v tree) (delete-node-from-bst (reverse (find-path v tree)) tree)) 
+ 
+; helper function for delete 
+(define (delete-node-from-bst nl tree) 
+  (cond 
+    ((empty? nl) tree) 
+    ((> (bst-node-count (car nl)) 1) (set-bst-node-count! (car nl) (- (bst-node-count (car nl)) 
+1)) tree) 
+    ((= (get-child-count (car nl)) 0) 
+     (cond 
+       ((equal? (car nl) tree) empty) 
+       ((equal? (car nl) (bst-node-left (car (cdr nl)))) (set-bst-node-left! (car (cdr nl)) empty) tree) 
+       (else (set-bst-node-right! (car (cdr nl)) empty) tree) 
+       )) 
+    (else tree)))
+
