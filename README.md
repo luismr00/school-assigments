@@ -32,3 +32,11 @@ There has been several school assignments that I have worked on more than what i
     * Quiz 5 - Conversion from C++
     * Quiz 7 - Conversion from C++
     * MathGame with Classes - Conversion from C++
+    
+* C
+
+Operating System class assignments using C
+
+* Other
+
+Concepts of Programming Languages class assignments which involved working in languages such as Racket and Prolog. The goal of each assignment was to expose students to utilize unknown languages outside of the scope of languages we already knew. For example, there was an 8 queens problem that needed to be converted to Prolog by the end of the course.
