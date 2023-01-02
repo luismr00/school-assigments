@@ -39,4 +39,4 @@ Operating System class assignments using C
 
 * Other
 
-Concepts of Programming Languages class assignments which involved working in languages such as Racket and Prolog. The goal of each assignment was to expose students to utilize unknown languages outside of the scope of languages we already knew. For example, there was an 8 queens problem that needed to be converted to Prolog by the end of the course.
+Concepts of Programming Languages class assignments which involved working in languages such as Racket and Prolog. The goal of each assignment was to expose students to utilize unknown languages outside of the scope of languages we already knew. For example, there was an 8 queens problem that needed to be converted from Java to Prolog by the end of the course.
